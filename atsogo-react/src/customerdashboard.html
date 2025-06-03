@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATSOGO Customer Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Define CSS variables for colors */
+        :root {
+            --bg-primary: #1a202c; /* Dark background */
+            --bg-secondary: #2d3748; /* Slightly lighter background for cards/sidebar */
+            --bg-tertiary: #4a5568; /* Even lighter for table headers/hover */
+            --text-primary: #e2e8f0; /* Light text */
+            --text-secondary: #a0aec0; /* Lighter gray text */
+            --border-color: #4a5568; /* Border color */
+        }
+
+        /* Light mode overrides */
+        body.light-mode {
+            --bg-primary: #f7fafc; /* Light background */
+            --bg-secondary: #ffffff; /* White background for cards/sidebar */
+            --bg-tertiary: #edf2f7; /* Light gray for table headers/hover */
+            --text-primary: #2d3748; /* Dark text */
+            --text-secondary: #4a5568; /* Darker gray text */
+            --border-color: #e2e8f0; /* Light border color */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+        }
+
+        /* Custom scrollbar for a sleeker look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* Custom CSS to handle sidebar width transitions */
+        .sidebar-expanded {
+            width: 256px; /* Corresponds to w-64 */
+        }
+        .sidebar-collapsed {
+            width: 80px; /* Corresponds to w-20 */
+        }
+        .sidebar-collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+            pointer-events: none;
+            margin-left: 0 !important; /* Override ml-3 */
+        }
+        .sidebar-expanded .nav-text {
+            opacity: 1;
+            width: auto;
+            overflow: visible;
+            pointer-events: auto;
+            margin-left: 12px; /* Corresponds to ml-3 */
+        }
+        .sidebar-collapsed .nav-item-content {
+            justify-content: center;
+        }
+        .sidebar-expanded .nav-item-content {
+            justify-content: flex-start;
+        }
+
+        /* Modal specific styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--bg-secondary);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+
+        /* Chatbox specific styles */
+        .chat-messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--bg-tertiary);
+        }
+        .chat-message {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
+            max-width: 80%;
+        }
+        .chat-message.user {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            margin-left: auto;
+        }
+        .chat-message.ai {
+            background-color: #6b7280; /* Gray-500 */
+            color: white;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body id="theme-body" class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="bg-[var(--bg-secondary)] text-[var(--text-primary)] flex flex-col p-4 shadow-lg transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 md:relative absolute z-50 h-full group sidebar-collapsed">
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-2xl font-bold text-indigo-400 whitespace-nowrap overflow-hidden">ATSOGO</h1>
+            <button id="close-sidebar" class="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <nav class="flex-1">
+            <ul>
+                <li class="mb-2">
+                    <!-- Current active link with distinct styling -->
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content bg-[var(--bg-tertiary)] text-indigo-300">
+                        <i data-lucide="home" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">My Dashboard</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <!-- Enhanced hover effect for other links -->
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="file-text" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">My Inquiries</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="bookmark" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Saved Lands</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="history" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Recently Viewed</span>
+                    </a>
+                </li>
+                <!-- Gemini API Feature Link for Customers -->
+                <li class="mb-2">
+                    <a href="#" id="open-recommendation-generator" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="lightbulb" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">💡 Get Land Recommendations</span>
+                    </a>
+                </li>
+                <!-- New Bank Payment Link -->
+                <li class="mb-2">
+                    <a href="#" id="open-bank-payment-modal" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">💰 Make a Payment</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="user" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Profile</span>
+                    </a>
+                </li>
+                <li class="mb-2">
+                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
+                        <i data-lucide="bell" class="w-5 h-5 flex-shrink-0"></i>
+                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="mt-auto pt-4 border-t border-[var(--border-color)]">
+            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 transition-colors duration-200 hover:scale-[1.02] transform nav-item-content">
+                <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
+                <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-[var(--bg-secondary)] shadow-md p-4 flex items-center justify-between z-10">
+            <button id="open-sidebar" class="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none mr-4">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <h2 class="text-xl font-semibold text-[var(--text-primary)]">Customer Dashboard</h2>
+            <div class="flex items-center space-x-4">
+                <div class="relative flex items-center">
+                    <input type="text" id="search-input" placeholder="Search lands..." class="pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
+                    <i data-lucide="search" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3"></i>
+                </div>
+                <button id="theme-toggle" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                    <i data-lucide="moon" id="theme-icon" class="w-6 h-6"></i>
+                </button>
+                <button class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                </button>
+                <div class="relative">
+                    <img src="https://placehold.co/40x40/000000/FFFFFF?text=CD" alt="Customer Avatar" class="w-10 h-10 rounded-full border-2 border-indigo-500 cursor-pointer">
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-[var(--bg-primary)]">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-[var(--text-secondary)]">Total Inquiries</p>
+                        <h3 class="text-3xl font-bold text-indigo-400 mt-1">15</h3>
+                    </div>
+                    <i data-lucide="message-square" class="w-10 h-10 text-indigo-500 opacity-30"></i>
+                </div>
+
+                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-[var(--text-secondary)]">Saved Lands</p>
+                        <h3 class="text-3xl font-bold text-emerald-400 mt-1">7</h3>
+                    </div>
+                    <i data-lucide="bookmark" class="w-10 h-10 text-emerald-500 opacity-30"></i>
+                </div>
+
+                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-[var(--text-secondary)]">Profile Completion</p>
+                        <h3 class="text-3xl font-bold text-purple-400 mt-1">80%</h3>
+                    </div>
+                    <i data-lucide="user-check" class="w-10 h-10 text-purple-500 opacity-30"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">My Recent Inquiries</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-[var(--border-color)]">
+                            <thead class="bg-[var(--bg-tertiary)]">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tl-lg">Land Title</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Date</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tr-lg">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--border-color)]">
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Residential Plot in Area A"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-28</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-400">Pending Response</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Commercial Space near Market"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-20</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-400">Responded</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Agricultural Land with River Access"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-15</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Closed</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
+                    <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">My Saved Lands</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-[var(--border-color)]">
+                            <thead class="bg-[var(--bg-tertiary)]">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tl-lg">Land Title</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Location</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tr-lg">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[var(--border-color)]">
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Scenic Plot with Mountain View"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Northern Region</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$50,000</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Urban Development Land"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Central Region</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$120,000</td>
+                                </tr>
+                                <tr class="hover:bg-[var(--bg-tertiary)]">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Small Farm Land"</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Southern Region</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$35,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 mb-6">
+                <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">Recently Viewed Lands</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+1" alt="Land 1" class="w-full h-24 object-cover rounded-md mb-2">
+                        <p class="text-sm font-medium text-[var(--text-primary)]">Plot in Lilongwe</p>
+                        <p class="text-xs text-[var(--text-secondary)]">Residential</p>
+                    </div>
+                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+2" alt="Land 2" class="w-full h-24 object-cover rounded-md mb-2">
+                        <p class="text-sm font-medium text-[var(--text-primary)]">Farm in Mzuzu</p>
+                        <p class="text-xs text-[var(--text-secondary)]">Agricultural</p>
+                    </div>
+                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+3" alt="Land 3" class="w-full h-24 object-cover rounded-md mb-2">
+                        <p class="text-sm font-medium text-[var(--text-primary)]">Commercial Blantyre</p>
+                        <p class="text-xs text-[var(--text-secondary)]">Commercial</p>
+                    </div>
+                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+4" alt="Land 4" class="w-full h-24 object-cover rounded-md mb-2">
+                        <p class="text-sm font-medium text-[var(--text-primary)]">Rural Plot</p>
+                        <p class="text-xs text-[var(--text-secondary)]">Residential</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chatbox Section (now integrated into main content) -->
+            <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
+                <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4 flex items-center">
+                    <i data-lucide="message-circle" class="w-5 h-5 mr-2"></i>
+                    Chat with Support
+                </h3>
+                <div id="chat-messages" class="chat-messages">
+                    <div class="chat-message ai">Hello! How can I assist you today?</div>
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
+                    <button id="send-chat-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Land Recommendation Generator Modal (remains a modal) -->
+    <div id="recommendation-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-[var(--text-primary)]">💡 Get Land Recommendations</h3>
+                <button id="close-recommendation-generator" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <label for="preferences-input" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Tell us your land preferences (e.g., location, size, type, budget, desired features):</label>
+                <textarea id="preferences-input" rows="6" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="e.g., I'm looking for agricultural land near a river in the Southern Region, around 10-20 acres, with good soil for maize, budget up to $50,000."></textarea>
+            </div>
+            <button id="get-recommendations-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md flex items-center justify-center">
+                <span id="recommend-button-text">Get Recommendations</span>
+                <svg id="recommend-loading-spinner" class="animate-spin h-5 w-5 text-white ml-3 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+            <div class="mt-6">
+                <h4 class="text-md font-semibold text-[var(--text-primary)] mb-2">AI-Powered Recommendations:</h4>
+                <div id="recommendations-output" class="p-4 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] min-h-[100px] max-h-[300px] overflow-y-auto whitespace-pre-wrap">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bank Transfer Payment Modal (NEW LOCATION) -->
+    <div id="bank-payment-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-semibold text-[var(--text-primary)]">💰 Bank Transfer Payment</h3>
+                <button id="close-bank-payment-modal" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <p class="text-sm text-[var(--text-secondary)] mb-4">
+                To make a payment, please transfer the required amount to the bank account details below.
+                **Crucially, include the unique reference number provided below in your bank transfer description.**
+                This helps us quickly identify and process your payment.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <p class="text-sm font-medium text-[var(--text-primary)]">Account Name:</p>
+                    <p class="text-base text-[var(--text-secondary)]">ATSOGO Land Trust</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-[var(--text-primary)]">Bank Name:</p>
+                    <p class="text-base text-[var(--text-secondary)]">Malawi National Bank</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-[var(--text-primary)]">Account Number:</p>
+                    <p class="text-base text-[var(--text-secondary)]">1234567890123</p>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-[var(--text-primary)]">SWIFT/BIC:</p>
+                    <p class="text-base text-[var(--text-secondary)]">MNBLMWMW</p>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="payment-reference" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Your Unique Payment Reference:</label>
+                <div class="relative">
+                    <input type="text" id="payment-reference" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-indigo-400 font-bold placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" readonly>
+                    <i data-lucide="tag" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="transferred-amount" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Amount Transferred (e.g., 500.00):</label>
+                <div class="relative">
+                    <input type="number" id="transferred-amount" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="e.g., 1000.00" step="0.01">
+                    <i data-lucide="dollar-sign" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                </div>
+            </div>
+
+            <button id="confirm-transfer-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md flex items-center justify-center">
+                <span id="confirm-transfer-button-text">Confirm My Transfer</span>
+                <svg id="confirm-transfer-loading-spinner" class="animate-spin h-5 w-5 text-white ml-3 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            </button>
+            <div id="payment-message" class="mt-4 text-center text-sm min-h-[20px]"></div>
+        </div>
+    </div>
+
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const sidebar = document.getElementById('sidebar');
+        const openSidebarBtn = document.getElementById('open-sidebar');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeBody = document.getElementById('theme-body');
+        const searchInput = document.getElementById('search-input'); // Get the search input
+
+        // Modal elements for land recommendation generator
+        const openRecommendationGeneratorBtn = document.getElementById('open-recommendation-generator');
+        const recommendationGeneratorModal = document.getElementById('recommendation-generator-modal');
+        const closeRecommendationGeneratorBtn = document.getElementById('close-recommendation-generator');
+        const preferencesInput = document.getElementById('preferences-input');
+        const getRecommendationsBtn = document.getElementById('get-recommendations-btn');
+        const recommendationsOutput = document.getElementById('recommendations-output');
+        const recommendLoadingSpinner = document.getElementById('recommend-loading-spinner');
+        const recommendButtonText = document.getElementById('recommend-button-text');
+
+        // Chatbox elements (now inline)
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const sendChatBtn = document.getElementById('send-chat-btn');
+
+        // Bank Transfer Payment elements (now in modal)
+        const openBankPaymentModalBtn = document.getElementById('open-bank-payment-modal');
+        const bankPaymentModal = document.getElementById('bank-payment-modal');
+        const closeBankPaymentModalBtn = document.getElementById('close-bank-payment-modal');
+        const paymentReferenceInput = document.getElementById('payment-reference');
+        const transferredAmountInput = document.getElementById('transferred-amount');
+        const confirmTransferBtn = document.getElementById('confirm-transfer-btn');
+        const confirmTransferButtonText = document.getElementById('confirm-transfer-button-text');
+        const confirmTransferLoadingSpinner = document.getElementById('confirm-transfer-loading-spinner');
+        const paymentMessage = document.getElementById('payment-message');
+
+
+        // Function to expand sidebar on desktop hover
+        function expandSidebar() {
+            if (window.innerWidth >= 768) { // Only for desktop
+                sidebar.classList.remove('sidebar-collapsed');
+                sidebar.classList.add('sidebar-expanded');
+            }
+        }
+
+        // Function to collapse sidebar on desktop mouse leave
+        function collapseSidebar() {
+            if (window.innerWidth >= 768) { // Only for desktop
+                sidebar.classList.remove('sidebar-expanded');
+                sidebar.classList.add('sidebar-collapsed');
+            }
+        }
+
+        // Event listeners for desktop hover
+        sidebar.addEventListener('mouseenter', expandSidebar);
+        sidebar.addEventListener('mouseleave', collapseSidebar);
+
+        // Mobile sidebar toggle logic (remains the same)
+        openSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            sidebar.classList.add('translate-x-0');
+            // Ensure expanded state when explicitly opened on mobile
+            sidebar.classList.remove('sidebar-collapsed');
+            sidebar.classList.add('sidebar-expanded');
+        });
+
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            // Revert to collapsed state when closed on mobile (optional, but good for consistency)
+            sidebar.classList.remove('sidebar-expanded');
+            sidebar.classList.add('sidebar-collapsed');
+        });
+
+        // Adjust sidebar visibility and state on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0'); // Ensure it's visible on desktop
+                // Desktop: Default to collapsed unless hovered
+                sidebar.classList.add('sidebar-collapsed');
+                sidebar.classList.remove('sidebar-expanded');
+            } else {
+                // Mobile: Ensure it's hidden by default, and can be expanded by click
+                sidebar.classList.remove('translate-x-0');
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Theme management functions
+        function setTheme(mode) {
+            if (mode === 'light') {
+                themeBody.classList.add('light-mode');
+            } else {
+                themeBody.classList.remove('light-mode');
+            }
+            // Always set the icon to 'moon' regardless of the mode
+            themeIcon.setAttribute('data-lucide', 'moon');
+            lucide.createIcons(); // Re-render icons after changing data-lucide attribute
+        }
+
+        // Toggle theme manually via button
+        themeToggleBtn.addEventListener('click', () => {
+            if (themeBody.classList.contains('light-mode')) {
+                setTheme('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                setTheme('light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Listen for system theme changes
+        const prefersLightScheme = window.matchMedia('(prefers-color-scheme: light)');
+
+        function handleSystemThemeChange(e) {
+            // Only apply system preference if user hasn't manually set a theme
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'light' : 'dark');
+            }
+        }
+
+        prefersLightScheme.addEventListener('change', handleSystemThemeChange);
+
+
+        // Set initial theme on load
+        window.onload = () => {
+            if (window.innerWidth >= 768) {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                sidebar.classList.add('sidebar-collapsed'); // Start collapsed on desktop
+            }
+
+            const savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme) {
+                // If a theme is saved in localStorage, use it
+                setTheme(savedTheme);
+            } else {
+                // Otherwise, use the system's preferred color scheme
+                setTheme(prefersLightScheme.matches ? 'light' : 'dark');
+            }
+
+            // Generate initial unique reference number for bank transfer when modal is opened
+            // The generateUniqueReference() call is now inside the openBankPaymentModalBtn listener
+        };
+
+        // Search functionality placeholder
+        searchInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                const query = searchInput.value.trim();
+                if (query) {
+                    // In a real application, you would send this query to your Laravel backend
+                    // and update the displayed content based on the search results.
+                    console.log('Searching for:', query);
+                    // Example: Redirect to a search results page or filter current view
+                    // window.location.href = `/search?q=${encodeURIComponent(query)}`;
+                    // For now, let's just clear the input
+                    searchInput.value = '';
+                    // You might want to display a message or update a specific section
+                }
+            }
+        });
+
+        // Gemini API Integration: Land Recommendation Generator
+        openRecommendationGeneratorBtn.addEventListener('click', () => {
+            recommendationGeneratorModal.classList.add('show');
+            preferencesInput.value = ''; // Clear previous input
+            recommendationsOutput.textContent = ''; // Clear previous output
+        });
+
+        closeRecommendationGeneratorBtn.addEventListener('click', () => {
+            recommendationGeneratorModal.classList.remove('show');
+        });
+
+        getRecommendationsBtn.addEventListener('click', async () => {
+            const preferences = preferencesInput.value.trim();
+            if (!preferences) {
+                recommendationsOutput.textContent = 'Please enter your land preferences to get recommendations.';
+                return;
+            }
+
+            // Show loading spinner
+            recommendLoadingSpinner.classList.remove('hidden');
+            recommendButtonText.textContent = 'Getting Recommendations...';
+            getRecommendationsBtn.disabled = true; // Disable button during generation
+            recommendationsOutput.textContent = ''; // Clear previous output
+
+            try {
+                const prompt = `As a land accessibility marketplace expert, suggest suitable land listings based on the following customer preferences. Provide a concise summary of each recommendation, highlighting why it fits the criteria. If possible, suggest 3-5 distinct options. Preferences: ${preferences}`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const generatedText = result.candidates[0].content.parts[0].text;
+                    recommendationsOutput.textContent = generatedText;
+                } else {
+                    recommendationsOutput.textContent = 'Error: Could not get recommendations. Please try again.';
+                    console.error('Gemini API response structure unexpected:', result);
+                }
+            } catch (error) {
+                recommendationsOutput.textContent = 'Error: Failed to connect to the AI service. Please check your network or try again later.';
+                console.error('Error calling Gemini API:', error);
+            } finally {
+                // Hide loading spinner
+                recommendLoadingSpinner.classList.add('hidden');
+                recommendButtonText.textContent = 'Get Recommendations';
+                getRecommendationsBtn.disabled = false; // Re-enable button
+            }
+        });
+
+        // Chatbox functionality (now inline)
+        function sendMessage() {
+            const messageText = chatInput.value.trim();
+            if (messageText) {
+                // Add user message to chat
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.classList.add('chat-message', 'user');
+                userMessageDiv.textContent = messageText;
+                chatMessages.appendChild(userMessageDiv);
+
+                chatInput.value = ''; // Clear input
+                chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+
+                // Simulate AI response (replace with actual Gemini API call for a chatbot)
+                setTimeout(() => {
+                    const aiMessageDiv = document.createElement('div');
+                    aiMessageDiv.classList.add('chat-message', 'ai');
+                    aiMessageDiv.textContent = "Thank you for your message. A support agent will be with you shortly.";
+                    chatMessages.appendChild(aiMessageDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+                }, 1000);
+            }
+        }
+
+        sendChatBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Bank Transfer Payment Functionality (now in modal)
+        function generateUniqueReference() {
+            const timestamp = Date.now().toString().slice(-6);
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            paymentReferenceInput.value = `ATS-${timestamp}-${random}`;
+        }
+
+        openBankPaymentModalBtn.addEventListener('click', () => {
+            bankPaymentModal.classList.add('show');
+            transferredAmountInput.value = ''; // Clear previous input
+            paymentMessage.textContent = ''; // Clear previous messages
+            generateUniqueReference(); // Generate a new reference each time the modal opens
+        });
+
+        closeBankPaymentModalBtn.addEventListener('click', () => {
+            bankPaymentModal.classList.remove('show');
+        });
+
+        confirmTransferBtn.addEventListener('click', async () => {
+            const referenceNumber = paymentReferenceInput.value.trim();
+            const transferredAmount = parseFloat(transferredAmountInput.value);
+
+            paymentMessage.textContent = ''; // Clear previous messages
+            paymentMessage.style.color = ''; // Reset color
+
+            if (!referenceNumber || isNaN(transferredAmount) || transferredAmount <= 0) {
+                paymentMessage.textContent = 'Please enter a valid amount and ensure the reference number is present.';
+                paymentMessage.style.color = '#ef4444'; // Red
+                return;
+            }
+
+            // Show loading state
+            confirmTransferBtn.disabled = true;
+            confirmTransferButtonText.textContent = 'Confirming...';
+            confirmTransferLoadingSpinner.classList.remove('hidden');
+
+            try {
+                // Simulate an API call to your backend to confirm the bank transfer
+                const response = await new Promise(resolve => setTimeout(() => {
+                    const success = Math.random() < 0.8;
+                    resolve({
+                        ok: success,
+                        json: () => Promise.resolve({
+                            message: success ? 'Payment confirmation received. We are verifying your transfer. This may take 1-2 business days.' : 'Payment confirmation failed. Please double-check details or contact support.',
+                            status: success ? 'success' : 'error'
+                        })
+                    });
+                }, 2000));
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    paymentMessage.textContent = result.message;
+                    paymentMessage.style.color = '#22c55e'; // Green
+                    transferredAmountInput.value = '';
+                    // No need to generate a new reference here, it will be generated when the modal reopens
+                } else {
+                    paymentMessage.textContent = result.message;
+                    paymentMessage.style.color = '#ef4444'; // Red
+                }
+            } catch (error) {
+                paymentMessage.textContent = 'Network error or failed to send confirmation.';
+                paymentMessage.style.color = '#ef4444'; // Red
+                console.error('Bank transfer confirmation error:', error);
+            } finally {
+                // Reset button state
+                confirmTransferBtn.disabled = false;
+                confirmTransferButtonText.textContent = 'Confirm My Transfer';
+                confirmTransferLoadingSpinner.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

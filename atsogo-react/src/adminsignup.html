@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATSOGO Admin Signup</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Define CSS variables for colors - consistent with dashboard */
+        :root {
+            --bg-primary: #1a202c; /* Dark background */
+            --bg-secondary: #2d3748; /* Slightly lighter background for cards/forms */
+            --bg-tertiary: #4a5568; /* Even lighter for input backgrounds/hover */
+            --text-primary: #e2e8f0; /* Light text */
+            --text-secondary: #a0aec0; /* Lighter gray text */
+            --border-color: #4a5568; /* Border color */
+        }
+
+        /* Light mode overrides */
+        body.light-mode {
+            --bg-primary: #f7fafc; /* Light background */
+            --bg-secondary: #ffffff; /* White background for cards/forms */
+            --bg-tertiary: #edf2f7; /* Light gray for input backgrounds/hover */
+            --text-primary: #2d3748; /* Dark text */
+            --text-secondary: #4a5568; /* Darker gray text */
+            --border-color: #e2e8f0; /* Light border color */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+        }
+    </style>
+</head>
+<body id="theme-body" class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-[var(--bg-secondary)] rounded-lg shadow-xl p-8 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-3xl font-bold text-indigo-400">ATSOGO Admin Sign Up</h2>
+            <button id="theme-toggle" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                <i data-lucide="moon" id="theme-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <form>
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Full Name</label>
+                <input type="text" id="name" name="name" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="Admin Name">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Email Address</label>
+                <input type="email" id="email" name="email" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="admin@atsogo.com">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Password</label>
+                <input type="password" id="password" name="password" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="••••••••">
+            </div>
+            <div class="mb-6">
+                <label for="confirm_password" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="••••••••">
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
+            Already have an admin account?
+            <a href="atsogo-admin-login.html" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200">Login</a>
+        </p>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeBody = document.getElementById('theme-body');
+
+        // Theme management functions
+        function setTheme(mode) {
+            if (mode === 'light') {
+                themeBody.classList.add('light-mode');
+            } else {
+                themeBody.classList.remove('light-mode');
+            }
+            // Always set the icon to 'moon' regardless of the mode
+            themeIcon.setAttribute('data-lucide', 'moon');
+            lucide.createIcons(); // Re-render icons after changing data-lucide attribute
+        }
+
+        // Toggle theme manually via button
+        themeToggleBtn.addEventListener('click', () => {
+            if (themeBody.classList.contains('light-mode')) {
+                setTheme('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                setTheme('light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Listen for system theme changes
+        const prefersLightScheme = window.matchMedia('(prefers-color-scheme: light)');
+
+        function handleSystemThemeChange(e) {
+            // Only apply system preference if user hasn't manually set a theme
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'light' : 'dark');
+            }
+        }
+
+        prefersLightScheme.addEventListener('change', handleSystemThemeChange);
+
+        // Set initial theme on load
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme) {
+                // If a theme is saved in localStorage, use it
+                setTheme(savedTheme);
+            } else {
+                // Otherwise, use the system's preferred color scheme
+                setTheme(prefersLightScheme.matches ? 'light' : 'dark');
+            }
+        };
+    </script>
+</body>
+</html>
