@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATSOGO Customer Dashboard</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Lucide Icons CDN -->
@@ -19,6 +17,20 @@
             --text-primary: #e2e8f0; /* Light text */
             --text-secondary: #a0aec0; /* Lighter gray text */
             --border-color: #4a5568; /* Border color */
+            --indigo-600: #4f46e5;
+            --indigo-700: #4338ca;
+            --indigo-300: #a5b4fc;
+            --indigo-400: #818cf8;
+            --indigo-500: #6366f1;
+            --emerald-400: #34d399;
+            --emerald-500: #10b981;
+            --purple-400: #c084fc;
+            --purple-500: #a855f7;
+            --yellow-400: #facc15;
+            --blue-400: #60a5fa;
+            --red-500: #ef4444;
+            --orange-500: #f97316;
+            --green-500: #22c55e;
         }
 
         /* Light mode overrides */
@@ -29,6 +41,20 @@
             --text-primary: #2d3748; /* Dark text */
             --text-secondary: #4a5568; /* Darker gray text */
             --border-color: #e2e8f0; /* Light border color */
+            --indigo-600: #4f46e5;
+            --indigo-700: #4338ca;
+            --indigo-300: #6366f1; /* Adjust for better visibility in light mode */
+            --indigo-400: #4f46e5; /* Adjust for better visibility in light mode */
+            --indigo-500: #4f46e5;
+            --emerald-400: #10b981;
+            --emerald-500: #059669;
+            --purple-400: #9333ea;
+            --purple-500: #7c3aed;
+            --yellow-400: #eab308;
+            --blue-400: #3b82f6;
+            --red-500: #dc2626;
+            --orange-500: #f97316;
+            --green-500: #22c55e;
         }
 
         body {
@@ -36,6 +62,9 @@
             background-color: var(--bg-primary);
             color: var(--text-primary);
             transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* Custom scrollbar for a sleeker look */
@@ -55,66 +84,278 @@
             background: var(--text-secondary);
         }
 
-        /* Custom CSS to handle sidebar width transitions */
-        .sidebar-expanded {
-            width: 256px; /* Corresponds to w-64 */
+        /* Sidebar styles */
+        aside#sidebar {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+            transform: translateX(-100%);
+            position: absolute;
+            z-index: 50;
+            height: 100%;
+            width: 80px; /* Default collapsed width */
+            overflow: hidden;
         }
-        .sidebar-collapsed {
-            width: 80px; /* Corresponds to w-20 */
+
+        @media (min-width: 768px) { /* md breakpoint */
+            aside#sidebar {
+                transform: translateX(0);
+                position: relative;
+            }
         }
-        .sidebar-collapsed .nav-text {
+
+        aside#sidebar.sidebar-expanded {
+            width: 256px; /* w-64 */
+        }
+        aside#sidebar.sidebar-collapsed {
+            width: 80px; /* w-20 */
+        }
+
+        aside#sidebar .nav-text {
             opacity: 0;
             width: 0;
             overflow: hidden;
             pointer-events: none;
-            margin-left: 0 !important; /* Override ml-3 */
+            margin-left: 0 !important;
+            transition: opacity 0.3s ease-in-out, width 0.3s ease-in-out, margin-left 0.3s ease-in-out;
         }
-        .sidebar-expanded .nav-text {
+        aside#sidebar.sidebar-expanded .nav-text {
             opacity: 1;
             width: auto;
             overflow: visible;
             pointer-events: auto;
-            margin-left: 12px; /* Corresponds to ml-3 */
+            margin-left: 0.75rem; /* ml-3 */
         }
-        .sidebar-collapsed .nav-item-content {
-            justify-content: center;
+        aside#sidebar .nav-item-content {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centered when collapsed */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+            color: var(--text-primary);
         }
-        .sidebar-expanded .nav-item-content {
-            justify-content: flex-start;
+        aside#sidebar.sidebar-expanded .nav-item-content {
+            justify-content: flex-start; /* Aligned left when expanded */
+        }
+        aside#sidebar .nav-item-content:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--indigo-300);
+            transform: scale(1.02);
+        }
+        aside#sidebar .nav-item-content.active,
+        aside#sidebar .nav-item-content.active:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--indigo-300);
         }
 
-        /* Modal specific styles */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+        /* Header styles */
+        header {
+            background-color: var(--bg-secondary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        header h2 {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: var(--text-primary);
+        }
+        header .search-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        header .search-input {
+            padding-left: 2.5rem; /* pl-10 */
+            padding-right: 1rem; /* pr-4 */
+            padding-top: 0.5rem; /* py-2 */
+            padding-bottom: 0.5rem; /* py-2 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            outline: none;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        header .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+        header .search-input:focus {
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5); /* focus:ring-2 focus:ring-indigo-500 */
+        }
+        header .search-icon {
+            width: 1.25rem; /* w-5 */
+            height: 1.25rem; /* h-5 */
+            color: var(--text-secondary);
+            position: absolute;
+            left: 0.75rem; /* left-3 */
+        }
+        header .icon-button {
+            color: var(--text-secondary);
+            transition: color 0.2s ease;
+            outline: none;
+        }
+        header .icon-button:hover {
+            color: var(--text-primary);
+        }
+        header .avatar {
+            width: 2.5rem; /* w-10 */
+            height: 2.5rem; /* h-10 */
+            border-radius: 9999px; /* rounded-full */
+            border: 2px solid var(--indigo-500);
+            cursor: pointer;
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 1.5rem; /* p-6 */
+            background-color: var(--bg-primary);
+        }
+
+        /* Grid Layouts */
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr; /* grid-cols-1 */
+            gap: 1.5rem; /* gap-6 */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .grid-container.kpi-grid {
+                grid-template-columns: repeat(2, 1fr); /* md:grid-cols-2 */
+            }
+        }
+        @media (min-width: 1024px) { /* lg breakpoint */
+            .grid-container.kpi-grid {
+                grid-template-columns: repeat(3, 1fr); /* lg:grid-cols-3 */
+            }
+            .grid-container.chart-grid {
+                grid-template-columns: repeat(2, 1fr); /* lg:grid-cols-2 */
+            }
+            .grid-container.viewed-lands-grid {
+                grid-template-columns: repeat(4, 1fr); /* lg:grid-cols-4 */
+            }
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: var(--bg-secondary);
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+            padding: 1.5rem; /* p-6 */
+        }
+        .kpi-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kpi-card p {
+            font-size: 0.875rem; /* text-sm */
+            color: var(--text-secondary);
+        }
+        .kpi-card h3 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            margin-top: 0.25rem; /* mt-1 */
+        }
+        .kpi-card i {
+            width: 2.5rem; /* w-10 */
+            height: 2.5rem; /* h-10 */
+            opacity: 0.3;
+        }
+        .kpi-card .text-indigo { color: var(--indigo-400); }
+        .kpi-card .icon-indigo { color: var(--indigo-500); }
+        .kpi-card .text-emerald { color: var(--emerald-400); }
+        .kpi-card .icon-emerald { color: var(--emerald-500); }
+        .kpi-card .text-purple { color: var(--purple-400); }
+        .kpi-card .icon-purple { color: var(--purple-500); }
+
+        /* Chart Placeholder */
+        .chart-placeholder {
+            height: 16rem; /* h-64 */
+            background-color: var(--bg-tertiary);
+            border-radius: 0.375rem; /* rounded-md */
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            color: var(--text-secondary);
         }
-        .modal-overlay.show {
-            opacity: 1;
-            visibility: visible;
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
         }
-        .modal-content {
-            background-color: var(--bg-secondary);
-            border-radius: 0.5rem;
-            padding: 2rem;
-            width: 90%;
-            max-width: 600px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
+        table thead {
+            background-color: var(--bg-tertiary);
         }
-        .modal-overlay.show .modal-content {
-            transform: translateY(0);
+        table th {
+            padding: 0.75rem 1.5rem; /* px-6 py-3 */
+            text-align: left;
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 500; /* font-medium */
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em; /* tracking-wider */
+        }
+        table th:first-child { border-top-left-radius: 0.5rem; } /* rounded-tl-lg */
+        table th:last-child { border-top-right-radius: 0.5rem; } /* rounded-tr-lg */
+        table tbody tr {
+            border-top: 1px solid var(--border-color);
+        }
+        table tbody tr:hover {
+            background-color: var(--bg-tertiary);
+        }
+        table td {
+            padding: 1rem 1.5rem; /* px-6 py-4 */
+            white-space: nowrap;
+            font-size: 0.875rem; /* text-sm */
+            color: var(--text-primary);
+        }
+        table td.font-medium {
+            font-weight: 500;
+        }
+        table td.text-secondary {
+            color: var(--text-secondary);
+        }
+        table td.text-yellow { color: var(--yellow-400); }
+        table td.text-emerald { color: var(--emerald-400); }
+        table td.text-blue { color: var(--blue-400); }
+
+        /* Recently Viewed Lands */
+        .viewed-land-item {
+            background-color: var(--bg-tertiary);
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 1rem; /* p-4 */
+            text-align: center;
+        }
+        .viewed-land-item img {
+            width: 100%;
+            height: 6rem; /* h-24 */
+            object-fit: cover;
+            border-radius: 0.375rem; /* rounded-md */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .viewed-land-item p.title {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: var(--text-primary);
+        }
+        .viewed-land-item p.category {
+            font-size: 0.75rem; /* text-xs */
+            color: var(--text-secondary);
         }
 
         /* Chatbox specific styles */
@@ -134,200 +375,284 @@
             max-width: 80%;
         }
         .chat-message.user {
-            background-color: #4f46e5; /* Indigo-600 */
+            background-color: var(--indigo-600);
             color: white;
             margin-left: auto;
         }
         .chat-message.ai {
-            background-color: #6b7280; /* Gray-500 */
-            color: white;
+            background-color: var(--bg-tertiary); /* Changed to use tertiary background */
+            color: var(--text-primary); /* Changed to use primary text color */
             margin-right: auto;
+        }
+
+        /* Form elements within modals/sections */
+        .form-label {
+            display: block;
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            outline: none;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        .input-field::placeholder {
+            color: var(--text-secondary);
+        }
+        .input-field:focus {
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5); /* focus:ring-2 focus:ring-indigo-500 */
+        }
+        .input-field-with-icon {
+            padding-left: 2.5rem; /* pl-10 */
+        }
+        .input-icon {
+            position: absolute;
+            left: 0.75rem; /* left-3 */
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.25rem; /* w-5 */
+            height: 1.25rem; /* h-5 */
+            color: var(--text-secondary);
+        }
+        .button-primary {
+            width: 100%;
+            background-color: var(--indigo-600);
+            color: white;
+            font-weight: 700; /* font-bold */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            outline: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-md */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .button-primary:hover {
+            background-color: var(--indigo-700);
+            transform: scale(1.01);
+        }
+        .button-primary:focus {
+            box-shadow: 0 0 0 2px var(--indigo-500), 0 0 0 4px var(--bg-secondary); /* focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] */
+        }
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+            height: 1.25rem; /* h-5 */
+            width: 1.25rem; /* w-5 */
+            color: white;
+            margin-left: 0.75rem; /* ml-3 */
+            display: none; /* hidden */
+        }
+        .loading-spinner.show {
+            display: inline-block;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .message-text {
+            margin-top: 1rem; /* mt-4 */
+            text-align: center;
+            font-size: 0.875rem; /* text-sm */
+            min-height: 1.25rem; /* min-h-[20px] */
+        }
+        .message-success {
+            color: var(--green-500);
+        }
+        .message-error {
+            color: var(--red-500);
         }
     </style>
 </head>
-<body id="theme-body" class="flex h-screen overflow-hidden">
+<body id="theme-body">
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="bg-[var(--bg-secondary)] text-[var(--text-primary)] flex flex-col p-4 shadow-lg transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 md:relative absolute z-50 h-full group sidebar-collapsed">
-        <div class="flex items-center justify-between mb-8">
-            <h1 class="text-2xl font-bold text-indigo-400 whitespace-nowrap overflow-hidden">ATSOGO</h1>
-            <button id="close-sidebar" class="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
-                <i data-lucide="x" class="w-6 h-6"></i>
+    <aside id="sidebar" class="sidebar-collapsed">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+            <h1 style="font-size: 1.5rem; font-weight: 700; color: var(--indigo-400); white-space: nowrap; overflow: hidden;">ATSOGO</h1>
+            <button id="close-sidebar" style="display: none; color: var(--text-secondary); outline: none;">
+                <i data-lucide="x" style="width: 1.5rem; height: 1.5rem;"></i>
             </button>
         </div>
-        <nav class="flex-1">
+        <nav style="flex: 1;">
             <ul>
-                <li class="mb-2">
-                    <!-- Current active link with distinct styling -->
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content bg-[var(--bg-tertiary)] text-indigo-300">
-                        <i data-lucide="home" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">My Dashboard</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content active">
+                        <i data-lucide="home" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">My Dashboard</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <!-- Enhanced hover effect for other links -->
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="file-text" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">My Inquiries</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content">
+                        <i data-lucide="file-text" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">My Inquiries</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="bookmark" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Saved Lands</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content">
+                        <i data-lucide="bookmark" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">Saved Lands</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="history" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Recently Viewed</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content">
+                        <i data-lucide="history" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">Recently Viewed</span>
                     </a>
                 </li>
-                <!-- Gemini API Feature Link for Customers -->
-                <li class="mb-2">
-                    <a href="#" id="open-recommendation-generator" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="lightbulb" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">💡 Get Land Recommendations</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" id="open-recommendation-generator" class="nav-item-content">
+                        <i data-lucide="lightbulb" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">💡 Get Land Recommendations</span>
                     </a>
                 </li>
-                <!-- New Bank Payment Link -->
-                <li class="mb-2">
-                    <a href="#" id="open-bank-payment-modal" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="wallet" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">💰 Make a Payment</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" id="open-bank-payment-modal" class="nav-item-content">
+                        <i data-lucide="wallet" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">💰 Make a Payment</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="user" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Profile</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content">
+                        <i data-lucide="user" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">Profile</span>
                     </a>
                 </li>
-                <li class="mb-2">
-                    <a href="#" class="flex items-center p-3 rounded-lg transition-colors duration-200 hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 hover:scale-[1.02] transform nav-item-content">
-                        <i data-lucide="bell" class="w-5 h-5 flex-shrink-0"></i>
-                        <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Notifications</span>
+                <li style="margin-bottom: 0.5rem;">
+                    <a href="#" class="nav-item-content">
+                        <i data-lucide="bell" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                        <span class="nav-text">Notifications</span>
                     </a>
                 </li>
             </ul>
         </nav>
-        <div class="mt-auto pt-4 border-t border-[var(--border-color)]">
-            <a href="#" class="flex items-center p-3 rounded-lg hover:bg-[var(--bg-tertiary)] hover:text-indigo-300 transition-colors duration-200 hover:scale-[1.02] transform nav-item-content">
-                <i data-lucide="log-out" class="w-5 h-5 flex-shrink-0"></i>
-                <span class="nav-text ml-3 whitespace-nowrap transition-all duration-300 ease-in-out">Logout</span>
+        <div style="margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <a href="#" class="nav-item-content">
+                <i data-lucide="log-out" style="width: 1.25rem; height: 1.25rem; flex-shrink: 0;"></i>
+                <span class="nav-text">Logout</span>
             </a>
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <header class="bg-[var(--bg-secondary)] shadow-md p-4 flex items-center justify-between z-10">
-            <button id="open-sidebar" class="md:hidden text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none mr-4">
-                <i data-lucide="menu" class="w-6 h-6"></i>
+    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        <header>
+            <button id="open-sidebar" style="display: none; color: var(--text-secondary); outline: none; margin-right: 1rem;">
+                <i data-lucide="menu" style="width: 1.5rem; height: 1.5rem;"></i>
             </button>
-            <h2 class="text-xl font-semibold text-[var(--text-primary)]">Customer Dashboard</h2>
-            <div class="flex items-center space-x-4">
-                <div class="relative flex items-center">
-                    <input type="text" id="search-input" placeholder="Search lands..." class="pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
-                    <i data-lucide="search" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3"></i>
+            <h2>Customer Dashboard</h2>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="search-input-container">
+                    <input type="text" id="search-input" placeholder="Search lands..." class="search-input">
+                    <i data-lucide="search" class="search-icon"></i>
                 </div>
-                <button id="theme-toggle" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
-                    <i data-lucide="moon" id="theme-icon" class="w-6 h-6"></i>
+                <button id="theme-toggle" class="icon-button">
+                    <i data-lucide="moon" id="theme-icon" style="width: 1.5rem; height: 1.5rem;"></i>
                 </button>
-                <button class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
-                    <i data-lucide="bell" class="w-6 h-6"></i>
+                <button class="icon-button">
+                    <i data-lucide="bell" style="width: 1.5rem; height: 1.5rem;"></i>
                 </button>
-                <div class="relative">
-                    <img src="https://placehold.co/40x40/000000/FFFFFF?text=CD" alt="Customer Avatar" class="w-10 h-10 rounded-full border-2 border-indigo-500 cursor-pointer">
+                <div style="position: relative;">
+                    <img src="https://placehold.co/40x40/000000/FFFFFF?text=CD" alt="Customer Avatar" class="avatar">
                 </div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-[var(--bg-primary)]">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+        <main>
+            <div class="grid-container kpi-grid">
+                <div class="card kpi-card">
                     <div>
-                        <p class="text-sm text-[var(--text-secondary)]">Total Inquiries</p>
-                        <h3 class="text-3xl font-bold text-indigo-400 mt-1">15</h3>
+                        <p>Total Inquiries</p>
+                        <h3 class="text-indigo">15</h3>
                     </div>
-                    <i data-lucide="message-square" class="w-10 h-10 text-indigo-500 opacity-30"></i>
+                    <i data-lucide="message-square" class="icon-indigo"></i>
                 </div>
 
-                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+                <div class="card kpi-card">
                     <div>
-                        <p class="text-sm text-[var(--text-secondary)]">Saved Lands</p>
-                        <h3 class="text-3xl font-bold text-emerald-400 mt-1">7</h3>
+                        <p>Saved Lands</p>
+                        <h3 class="text-emerald">7</h3>
                     </div>
-                    <i data-lucide="bookmark" class="w-10 h-10 text-emerald-500 opacity-30"></i>
+                    <i data-lucide="bookmark" class="icon-emerald"></i>
                 </div>
 
-                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 flex items-center justify-between">
+                <div class="card kpi-card">
                     <div>
-                        <p class="text-sm text-[var(--text-secondary)]">Profile Completion</p>
-                        <h3 class="text-3xl font-bold text-purple-400 mt-1">80%</h3>
+                        <p>Profile Completion</p>
+                        <h3 class="text-purple">80%</h3>
                     </div>
-                    <i data-lucide="user-check" class="w-10 h-10 text-purple-500 opacity-30"></i>
+                    <i data-lucide="user-check" class="icon-purple"></i>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">My Recent Inquiries</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-[var(--border-color)]">
-                            <thead class="bg-[var(--bg-tertiary)]">
+            <div class="grid-container chart-grid">
+                <div class="card">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">My Recent Inquiries</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tl-lg">Land Title</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Date</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tr-lg">Status</th>
+                                    <th>Land Title</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[var(--border-color)]">
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Residential Plot in Area A"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-28</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-400">Pending Response</td>
+                            <tbody>
+                                <tr>
+                                    <td class="font-medium">"Residential Plot in Area A"</td>
+                                    <td class="text-secondary">2025-05-28</td>
+                                    <td class="text-blue">Pending Response</td>
                                 </tr>
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Commercial Space near Market"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-20</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-emerald-400">Responded</td>
+                                <tr>
+                                    <td class="font-medium">"Commercial Space near Market"</td>
+                                    <td class="text-secondary">2025-05-20</td>
+                                    <td class="text-emerald">Responded</td>
                                 </tr>
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Agricultural Land with River Access"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">2025-05-15</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Closed</td>
+                                <tr>
+                                    <td class="font-medium">"Agricultural Land with River Access"</td>
+                                    <td class="text-secondary">2025-05-15</td>
+                                    <td class="text-secondary">Closed</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
-                    <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">My Saved Lands</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-[var(--border-color)]">
-                            <thead class="bg-[var(--bg-tertiary)]">
+                <div class="card">
+                    <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">My Saved Lands</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tl-lg">Land Title</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">Location</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider rounded-tr-lg">Price</th>
+                                    <th>Land Title</th>
+                                    <th>Location</th>
+                                    <th>Price</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[var(--border-color)]">
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Scenic Plot with Mountain View"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Northern Region</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$50,000</td>
+                            <tbody>
+                                <tr>
+                                    <td class="font-medium">"Scenic Plot with Mountain View"</td>
+                                    <td class="text-secondary">Northern Region</td>
+                                    <td class="text-secondary">$50,000</td>
                                 </tr>
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Urban Development Land"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Central Region</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$120,000</td>
+                                <tr>
+                                    <td class="font-medium">"Urban Development Land"</td>
+                                    <td class="text-secondary">Central Region</td>
+                                    <td class="text-secondary">$120,000</td>
                                 </tr>
-                                <tr class="hover:bg-[var(--bg-tertiary)]">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)]">"Small Farm Land"</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">Southern Region</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)]">$35,000</td>
+                                <tr>
+                                    <td class="font-medium">"Small Farm Land"</td>
+                                    <td class="text-secondary">Southern Region</td>
+                                    <td class="text-secondary">$35,000</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -335,44 +660,43 @@
                 </div>
             </div>
 
-            <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6 mb-6">
-                <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">Recently Viewed Lands</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
-                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+1" alt="Land 1" class="w-full h-24 object-cover rounded-md mb-2">
-                        <p class="text-sm font-medium text-[var(--text-primary)]">Plot in Lilongwe</p>
-                        <p class="text-xs text-[var(--text-secondary)]">Residential</p>
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem;">Recently Viewed Lands</h3>
+                <div class="grid-container viewed-lands-grid">
+                    <div class="viewed-land-item">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+1" alt="Land 1">
+                        <p class="title">Plot in Lilongwe</p>
+                        <p class="category">Residential</p>
                     </div>
-                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
-                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+2" alt="Land 2" class="w-full h-24 object-cover rounded-md mb-2">
-                        <p class="text-sm font-medium text-[var(--text-primary)]">Farm in Mzuzu</p>
-                        <p class="text-xs text-[var(--text-secondary)]">Agricultural</p>
+                    <div class="viewed-land-item">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+2" alt="Land 2">
+                        <p class="title">Farm in Mzuzu</p>
+                        <p class="category">Agricultural</p>
                     </div>
-                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
-                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+3" alt="Land 3" class="w-full h-24 object-cover rounded-md mb-2">
-                        <p class="text-sm font-medium text-[var(--text-primary)]">Commercial Blantyre</p>
-                        <p class="text-xs text-[var(--text-secondary)]">Commercial</p>
+                    <div class="viewed-land-item">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+3" alt="Land 3">
+                        <p class="title">Commercial Blantyre</p>
+                        <p class="category">Commercial</p>
                     </div>
-                    <div class="bg-[var(--bg-tertiary)] rounded-lg p-4 text-center">
-                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+4" alt="Land 4" class="w-full h-24 object-cover rounded-md mb-2">
-                        <p class="text-sm font-medium text-[var(--text-primary)]">Rural Plot</p>
-                        <p class="text-xs text-[var(--text-secondary)]">Residential</p>
+                    <div class="viewed-land-item">
+                        <img src="https://placehold.co/150x100/374151/9CA3AF?text=Land+4" alt="Land 4">
+                        <p class="title">Rural Plot</p>
+                        <p class="category">Residential</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Chatbox Section (now integrated into main content) -->
-            <div class="bg-[var(--bg-secondary)] rounded-lg shadow-lg p-6">
-                <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4 flex items-center">
-                    <i data-lucide="message-circle" class="w-5 h-5 mr-2"></i>
+            <div class="card">
+                <h3 style="font-size: 1.125rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center;">
+                    <i data-lucide="message-circle" style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;"></i>
                     Chat with Support
                 </h3>
                 <div id="chat-messages" class="chat-messages">
                     <div class="chat-message ai">Hello! How can I assist you today?</div>
                 </div>
-                <div class="flex space-x-2">
-                    <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200">
-                    <button id="send-chat-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md">
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="input-field" style="flex: 1;">
+                    <button id="send-chat-btn" class="button-primary" style="width: auto; padding: 0.5rem 1rem;">
                         Send
                     </button>
                 </div>
@@ -380,92 +704,94 @@
         </main>
     </div>
 
-    <!-- Land Recommendation Generator Modal (remains a modal) -->
+    <!-- Land Recommendation Generator Modal -->
     <div id="recommendation-generator-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-[var(--text-primary)]">💡 Get Land Recommendations</h3>
-                <button id="close-recommendation-generator" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">💡 Get Land Recommendations</h3>
+                <button id="close-recommendation-generator" style="color: var(--text-secondary); outline: none;">
+                    <i data-lucide="x" style="width: 1.5rem; height: 1.5rem;"></i>
                 </button>
             </div>
-            <div class="mb-4">
-                <label for="preferences-input" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Tell us your land preferences (e.g., location, size, type, budget, desired features):</label>
-                <textarea id="preferences-input" rows="6" class="w-full px-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="e.g., I'm looking for agricultural land near a river in the Southern Region, around 10-20 acres, with good soil for maize, budget up to $50,000."></textarea>
+            <div style="margin-bottom: 1rem;">
+                <label for="preferences-input" class="form-label">Tell us your land preferences (e.g., location, size, type, budget, desired features):</label>
+                <textarea id="preferences-input" rows="6" class="input-field" placeholder="e.g., I'm looking for agricultural land near a river in the Southern Region, around 10-20 acres, with good soil for maize, budget up to $50,000."></textarea>
             </div>
-            <button id="get-recommendations-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md flex items-center justify-center">
+            <button id="get-recommendations-btn" class="button-primary">
                 <span id="recommend-button-text">Get Recommendations</span>
-                <svg id="recommend-loading-spinner" class="animate-spin h-5 w-5 text-white ml-3 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg id="recommend-loading-spinner" class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
             </button>
-            <div class="mt-6">
-                <h4 class="text-md font-semibold text-[var(--text-primary)] mb-2">AI-Powered Recommendations:</h4>
-                <div id="recommendations-output" class="p-4 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] min-h-[100px] max-h-[300px] overflow-y-auto whitespace-pre-wrap">
+            <div style="margin-top: 1.5rem;">
+                <h4 style="font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem;">AI-Powered Recommendations:</h4>
+                <div id="recommendations-output" class="input-field" style="min-height: 100px; max-height: 300px; overflow-y: auto; white-space: pre-wrap;">
                     </div>
             </div>
         </div>
     </div>
 
-    <!-- Bank Transfer Payment Modal (NEW LOCATION) -->
+    <!-- Bank Transfer Payment Modal -->
     <div id="bank-payment-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-[var(--text-primary)]">💰 Bank Transfer Payment</h3>
-                <button id="close-bank-payment-modal" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">💰 Bank Transfer Payment</h3>
+                <button id="close-bank-payment-modal" style="color: var(--text-secondary); outline: none;">
+                    <i data-lucide="x" style="width: 1.5rem; height: 1.5rem;"></i>
                 </button>
             </div>
-            <p class="text-sm text-[var(--text-secondary)] mb-4">
+            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem;">
                 To make a payment, please transfer the required amount to the bank account details below.
-                **Crucially, include the unique reference number provided below in your bank transfer description.**
+                <strong style="font-weight: 700;">Crucially, include the unique reference number provided below in your bank transfer description.</strong>
                 This helps us quickly identify and process your payment.
             </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <div>
-                    <p class="text-sm font-medium text-[var(--text-primary)]">Account Name:</p>
-                    <p class="text-base text-[var(--text-secondary)]">ATSOGO Land Trust</p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-[var(--text-primary)]">Bank Name:</p>
-                    <p class="text-base text-[var(--text-secondary)]">Malawi National Bank</p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-[var(--text-primary)]">Account Number:</p>
-                    <p class="text-base text-[var(--text-secondary)]">1234567890123</p>
-                </div>
-                <div>
-                    <p class="text-sm font-medium text-[var(--text-primary)]">SWIFT/BIC:</p>
-                    <p class="text-base text-[var(--text-secondary)]">MNBLMWMW</p>
-                </div>
-            </div>
-
-            <div class="mb-4">
-                <label for="payment-reference" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Your Unique Payment Reference:</label>
-                <div class="relative">
-                    <input type="text" id="payment-reference" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-indigo-400 font-bold placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" readonly>
-                    <i data-lucide="tag" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1rem;">
+                    <div>
+                        <p style="font-size: 0.875rem; font-weight: 500; color: var(--text-primary);">Account Name:</p>
+                        <p style="font-size: 1rem; color: var(--text-secondary);">ATSOGO Land Trust</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.875rem; font-weight: 500; color: var(--text-primary);">Bank Name:</p>
+                        <p style="font-size: 1rem; color: var(--text-secondary);">Malawi National Bank</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.875rem; font-weight: 500; color: var(--text-primary);">Account Number:</p>
+                        <p style="font-size: 1rem; color: var(--text-secondary);">1234567890123</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 0.875rem; font-weight: 500; color: var(--text-primary);">SWIFT/BIC:</p>
+                        <p style="font-size: 1rem; color: var(--text-secondary);">MNBLMWMW</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="mb-4">
-                <label for="transferred-amount" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Amount Transferred (e.g., 500.00):</label>
-                <div class="relative">
-                    <input type="number" id="transferred-amount" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="e.g., 1000.00" step="0.01">
-                    <i data-lucide="dollar-sign" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+            <div style="margin-bottom: 1rem;">
+                <label for="payment-reference" class="form-label">Your Unique Payment Reference:</label>
+                <div style="position: relative;">
+                    <input type="text" id="payment-reference" class="input-field input-field-with-icon" style="color: var(--indigo-400); font-weight: 700;" readonly>
+                    <i data-lucide="tag" class="input-icon"></i>
                 </div>
             </div>
 
-            <button id="confirm-transfer-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md flex items-center justify-center">
+            <div style="margin-bottom: 1rem;">
+                <label for="transferred-amount" class="form-label">Amount Transferred (e.g., 500.00):</label>
+                <div style="position: relative;">
+                    <input type="number" id="transferred-amount" class="input-field input-field-with-icon" placeholder="e.g., 1000.00" step="0.01">
+                    <i data-lucide="dollar-sign" class="input-icon"></i>
+                </div>
+            </div>
+
+            <button id="confirm-transfer-btn" class="button-primary">
                 <span id="confirm-transfer-button-text">Confirm My Transfer</span>
-                <svg id="confirm-transfer-loading-spinner" class="animate-spin h-5 w-5 text-white ml-3 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg id="confirm-transfer-loading-spinner" class="loading-spinner" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
             </button>
-            <div id="payment-message" class="mt-4 text-center text-sm min-h-[20px]"></div>
+            <div id="payment-message" class="message-text"></div>
         </div>
     </div>
 
@@ -555,11 +881,19 @@
                 sidebar.classList.add('sidebar-collapsed');
                 sidebar.classList.remove('sidebar-expanded');
             } else {
-                // Mobile: Ensure it's hidden by default, and can be expanded by click
+                /* For mobile, ensure sidebar is hidden by default and can be expanded by click */
                 sidebar.classList.remove('translate-x-0');
                 sidebar.classList.add('-translate-x-full');
+                /* Show/hide the open sidebar button on mobile */
+                openSidebarBtn.style.display = 'block';
+                closeSidebarBtn.style.display = 'block'; /* Ensure close button is also block on mobile */
+            }
+            if (window.innerWidth >= 768) {
+                openSidebarBtn.style.display = 'none'; /* Hide on desktop */
+                closeSidebarBtn.style.display = 'none'; /* Hide on desktop */
             }
         });
+
 
         // Theme management functions
         function setTheme(mode) {
@@ -603,6 +937,9 @@
                 sidebar.classList.remove('-translate-x-full');
                 sidebar.classList.add('translate-x-0');
                 sidebar.classList.add('sidebar-collapsed'); // Start collapsed on desktop
+            } else {
+                openSidebarBtn.style.display = 'block'; /* Show on mobile */
+                closeSidebarBtn.style.display = 'block'; /* Show on mobile */
             }
 
             const savedTheme = localStorage.getItem('theme');
@@ -655,7 +992,7 @@
             }
 
             // Show loading spinner
-            recommendLoadingSpinner.classList.remove('hidden');
+            recommendLoadingSpinner.classList.add('show');
             recommendButtonText.textContent = 'Getting Recommendations...';
             getRecommendationsBtn.disabled = true; // Disable button during generation
             recommendationsOutput.textContent = ''; // Clear previous output
@@ -691,7 +1028,7 @@
                 console.error('Error calling Gemini API:', error);
             } finally {
                 // Hide loading spinner
-                recommendLoadingSpinner.classList.add('hidden');
+                recommendLoadingSpinner.classList.remove('show');
                 recommendButtonText.textContent = 'Get Recommendations';
                 getRecommendationsBtn.disabled = false; // Re-enable button
             }
@@ -755,14 +1092,15 @@
 
             if (!referenceNumber || isNaN(transferredAmount) || transferredAmount <= 0) {
                 paymentMessage.textContent = 'Please enter a valid amount and ensure the reference number is present.';
-                paymentMessage.style.color = '#ef4444'; // Red
+                paymentMessage.classList.remove('message-success');
+                paymentMessage.classList.add('message-error');
                 return;
             }
 
             // Show loading state
             confirmTransferBtn.disabled = true;
             confirmTransferButtonText.textContent = 'Confirming...';
-            confirmTransferLoadingSpinner.classList.remove('hidden');
+            confirmTransferLoadingSpinner.classList.add('show');
 
             try {
                 // Simulate an API call to your backend to confirm the bank transfer
@@ -781,25 +1119,26 @@
 
                 if (response.ok) {
                     paymentMessage.textContent = result.message;
-                    paymentMessage.style.color = '#22c55e'; // Green
+                    paymentMessage.classList.remove('message-error');
+                    paymentMessage.classList.add('message-success');
                     transferredAmountInput.value = '';
-                    // No need to generate a new reference here, it will be generated when the modal reopens
                 } else {
                     paymentMessage.textContent = result.message;
-                    paymentMessage.style.color = '#ef4444'; // Red
+                    paymentMessage.classList.remove('message-success');
+                    paymentMessage.classList.add('message-error');
                 }
             } catch (error) {
                 paymentMessage.textContent = 'Network error or failed to send confirmation.';
-                paymentMessage.style.color = '#ef4444'; // Red
+                paymentMessage.classList.remove('message-success');
+                paymentMessage.classList.add('message-error');
                 console.error('Bank transfer confirmation error:', error);
             } finally {
                 // Reset button state
                 confirmTransferBtn.disabled = false;
                 confirmTransferButtonText.textContent = 'Confirm My Transfer';
-                confirmTransferLoadingSpinner.classList.add('hidden');
+                confirmTransferLoadingSpinner.classList.remove('show');
             }
         });
     </script>
 </body>
 </html>
- 
