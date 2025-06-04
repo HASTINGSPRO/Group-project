@@ -1,0 +1,255 @@
+<x-layout>
+     <style>
+        /* Define CSS variables for colors - consistent with dashboard */
+        :root {
+            --bg-primary: #1a202c; /* Dark background */
+            --bg-secondary: #2d3748; /* Slightly lighter background for cards/forms */
+            --bg-tertiary: #4a5568; /* Even lighter for input backgrounds/hover */
+            --text-primary: #e2e8f0; /* Light text */
+            --text-secondary: #a0aec0; /* Lighter gray text */
+            --border-color: #4a5568; /* Border color */
+        }
+
+        /* Light mode overrides */
+        body.light-mode {
+            --bg-primary: #f7fafc; /* Light background */
+            --bg-secondary: #ffffff; /* White background for cards/forms */
+            --bg-tertiary: #edf2f7; /* Light gray for input backgrounds/hover */
+            --text-primary: #2d3748; /* Dark text */
+            --text-secondary: #4a5568; /* Darker gray text */
+            --border-color: #e2e8f0; /* Light border color */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth theme transition */
+        }
+    </style>
+</head>
+<body id="theme-body" class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-[var(--bg-secondary)] rounded-lg shadow-xl p-8 w-full max-w-md">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-3xl font-bold text-indigo-400">ATSOGO Sign Up</h2>
+            <button id="theme-toggle" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                <i data-lucide="moon" id="theme-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <form>
+            <div class="mb-4">
+                <label for="name" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Username</label>
+                <div class="relative">
+                    <input type="text" id="name" name="name" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="John Doe">
+                    <i data-lucide="user" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Email Address</label>
+                <div class="relative">
+                    <input type="email" id="email" name="email" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="your@example.com">
+                    <i data-lucide="mail" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="phone" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Phone Number</label>
+                <div class="relative">
+                    <input type="tel" id="phone" name="phone" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="+1234567890">
+                    <i data-lucide="phone" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                </div>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Password</label>
+                <div class="relative">
+                    <input type="password" id="password" name="password" class="w-full pl-10 pr-10 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="••••••••">
+                    <i data-lucide="lock" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                    <button type="button" id="toggle-password-visibility" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                        <i data-lucide="eye" id="password-toggle-icon" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="password-strength-feedback" class="mt-2 text-sm text-[var(--text-secondary)] min-h-[20px]">
+                    </div>
+            </div>
+            <div class="mb-6">
+                <label for="confirm_password" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Confirm Password</label>
+                <div class="relative">
+                    <input type="password" id="confirm_password" name="confirm_password" class="w-full pl-10 pr-10 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="••••••••">
+                    <i data-lucide="check-circle-2" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+                    <button type="button" id="toggle-confirm-password-visibility" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] focus:outline-none">
+                        <i data-lucide="eye" id="confirm-password-toggle-icon" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-[var(--bg-secondary)] transition-all duration-200 shadow-md">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
+            Already have an account?
+            <a href="atsogo-customer-login.html" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200">Login</a>
+        </p>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const themeBody = document.getElementById('theme-body');
+
+        // Password Strength Checker elements
+        const passwordInput = document.getElementById('password');
+        const passwordStrengthFeedback = document.getElementById('password-strength-feedback');
+
+        // Password Visibility Toggle elements
+        const togglePasswordVisibilityBtn = document.getElementById('toggle-password-visibility');
+        const passwordToggleIcon = document.getElementById('password-toggle-icon');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const toggleConfirmPasswordVisibilityBtn = document.getElementById('toggle-confirm-password-visibility');
+        const confirmPasswordToggleIcon = document.getElementById('confirm-password-toggle-icon');
+
+
+        // Theme management functions
+        function setTheme(mode) {
+            if (mode === 'light') {
+                themeBody.classList.add('light-mode');
+            } else {
+                themeBody.classList.remove('light-mode');
+            }
+            // Always set the icon to 'moon' regardless of the mode
+            themeIcon.setAttribute('data-lucide', 'moon');
+            lucide.createIcons(); // Re-render icons after changing data-lucide attribute
+        }
+
+        // Toggle theme manually via button
+        themeToggleBtn.addEventListener('click', () => {
+            if (themeBody.classList.contains('light-mode')) {
+                setTheme('dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                setTheme('light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Listen for system theme changes
+        const prefersLightScheme = window.matchMedia('(prefers-color-scheme: light)');
+
+        function handleSystemThemeChange(e) {
+            // Only apply system preference if user hasn't manually set a theme
+            if (!localStorage.getItem('theme')) {
+                setTheme(e.matches ? 'light' : 'dark');
+            }
+        }
+
+        prefersLightScheme.addEventListener('change', handleSystemThemeChange);
+
+        // Set initial theme on load
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme');
+
+            if (savedTheme) {
+                // If a theme is saved in localStorage, use it
+                setTheme(savedTheme);
+            } else {
+                // Otherwise, use the system's preferred color scheme
+                setTheme(prefersLightScheme.matches ? 'light' : 'dark');
+            }
+        };
+
+        // AI-Powered Password Strength Checker
+        let debounceTimer;
+        passwordInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const password = passwordInput.value;
+
+            if (password.length === 0) {
+                passwordStrengthFeedback.textContent = '';
+                return;
+            }
+
+            passwordStrengthFeedback.textContent = 'Analyzing password strength...';
+            passwordStrengthFeedback.style.color = 'var(--text-secondary)'; // Default color
+
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const prompt = `Analyze the strength of the following password and provide constructive feedback on how to improve it. Categorize its strength (e.g., Very Weak, Weak, Moderate, Strong, Very Strong). Provide specific suggestions for improvement. Password: "${password}"`;
+
+                    let chatHistory = [];
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = ""; // If you want to use models other than gemini-2.0-flash or imagen-3.0-generate-002, provide an API key here. Otherwise, leave this as-is.
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const feedbackText = result.candidates[0].content.parts[0].text;
+                        passwordStrengthFeedback.textContent = feedbackText;
+
+                        // Optional: Change color based on perceived strength (simple heuristic)
+                        if (feedbackText.includes('Very Weak') || feedbackText.includes('Weak')) {
+                            passwordStrengthFeedback.style.color = '#ef4444'; // Red
+                        } else if (feedbackText.includes('Moderate')) {
+                            passwordStrengthFeedback.style.color = '#f59e0b'; // Orange
+                        } else if (feedbackText.includes('Strong') || feedbackText.includes('Very Strong')) {
+                            passwordStrengthFeedback.style.color = '#22c55e'; // Green
+                        } else {
+                            passwordStrengthFeedback.style.color = 'var(--text-secondary)';
+                        }
+
+                    } else {
+                        passwordStrengthFeedback.textContent = 'Could not analyze password strength.';
+                        passwordStrengthFeedback.style.color = '#ef4444'; // Red
+                        console.error('Gemini API response structure unexpected:', result);
+                    }
+                } catch (error) {
+                    passwordStrengthFeedback.textContent = 'Error: Failed to analyze password strength.';
+                    passwordStrengthFeedback.style.color = '#ef4444'; // Red
+                    console.error('Error calling Gemini API for password strength:', error);
+                }
+            }, 500); // Debounce for 500ms
+        });
+
+        // Password Visibility Toggle functionality for Password field
+        togglePasswordVisibilityBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            if (type === 'password') {
+                passwordToggleIcon.setAttribute('data-lucide', 'eye');
+            } else {
+                passwordToggleIcon.setAttribute('data-lucide', 'eye-off');
+            }
+            lucide.createIcons();
+        });
+
+        // Password Visibility Toggle functionality for Confirm Password field
+        toggleConfirmPasswordVisibilityBtn.addEventListener('click', () => {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+
+            if (type === 'password') {
+                confirmPasswordToggleIcon.setAttribute('data-lucide', 'eye');
+            } else {
+                confirmPasswordToggleIcon.setAttribute('data-lucide', 'eye-off');
+            }
+            lucide.createIcons();
+        });
+    </script>
+</body>
+
+</x-layout>
