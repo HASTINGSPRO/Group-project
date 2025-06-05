@@ -30,11 +30,20 @@ class AuthController extends Controller
 
       
  }
-  public function login(){
-           $fields = $request->validate([
-       'email' => ['required','max:50' ,'email','unique:users'], 
-       'password'=> ['required','min:4', 'confirmed']
-        ]);
+  public function loginUser(Request $request){
+       $fields = $request ->validate([
+        'email' =>['required','max:50', 'email'],
+        'password'=> ['required']
+        ]); 
+
+        //Try to login
+        if(Auth::attempt($fields, $request ->remember)){
+            return redirect()->intended('/welcome');
+        }else{
+            return back()->withErrors([
+                'failed' => 'The credentials do not match with our records'
+            ]);
         }
    
+}
 }
