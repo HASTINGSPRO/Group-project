@@ -46,7 +46,7 @@
                     <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <!-- Error message for email validation -->
-                @error('email') <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p> @enderror
+                @error('email') <p class="text-red-500 text-sm italic mt-1">{{ $message }}</p> @enderror
             </div>
 
             <!-- Password Input Field with Icon and Show/Hide Toggle -->
@@ -68,7 +68,7 @@
                     <i class="fas fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" onclick="togglePasswordVisibility('password')"></i>
                 </div>
                 <!-- Error message for password validation -->
-                @error('password') <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p> @enderror
+                @error('password') <p class="text-red-500 text-sm italic mt-1">{{ $message }}</p> @enderror
             </div>
 
             <!-- Remember me checkbox and Forgot password link -->
@@ -85,7 +85,7 @@
 
             <!-- Global error message for failed login attempts -->
             @error('failed')
-                <p class="text-red-500 text-xs italic mb-4">{{ $message }}</p>
+                <p class="text-red-500 text-sm  italic mb-4">{{ $message }}</p>
             @enderror
 
             <!-- Login button -->
@@ -100,7 +100,7 @@
         </form>
 
         {{-- "Don't have an account?" message and Sign up link --}}
-        <div class="mt-6 text-center text-gray-700 text-sm">
+        <div class="mt-6  text-center text-gray-700 text-sm">
             Don't have an account?
             <a href="{{ route('register') }}" class="text-yellow-500 hover:text-yellow-600 font-bold">Sign up</a>
         </div>
