@@ -1,32 +1,27 @@
-<!-- This HTML code defines a login form for the ATSOGO application,
-     incorporating input fields for email and password with integrated icons
-     and a show/hide password toggle. It's styled with Tailwind CSS for
-     responsiveness and aesthetics. -->
+<!-- This HTML code defines a password reset form for the ATSOGO application.
+     It includes input fields for email, new password, and confirming the new password,
+     along with integrated icons and a show/hide password toggle for better usability.
+     The page is styled with Tailwind CSS for responsiveness and aesthetics. -->
 
 <!-- It's assumed that the x-layout component includes the necessary
      Tailwind CSS setup and the Font Awesome CDN link in its <head> section.
-     If not, add the Font Awesome link manually:
+     If not, ensure the Font Awesome link is correctly added in your main layout file:
      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KwDFWJ8pcyqqQpNPjNpXH7P2jJ/6hOtyWpNKx/bywM+bQUIPTfMfw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 -->
 
 <x-layout>
-    <head>
-        <!-- Other head elements like meta tags, title, etc. -->
-
-        <!-- Font Awesome CSS: Crucial for displaying the icons -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KwDFWJ8pcyqqQpNPjNpXH7P2jJ/6hOtyWpNKx/bywM+bQUIPTfMfw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <!-- Your other CSS files (e.g., Tailwind CSS) -->
-    </head>
-    <!-- Main container for the login form, centered on the page and styled -->
+    <!-- Main container for the reset password form, centered on the page and styled -->
     <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg mt-20">
-        <!-- Login page title -->
-        <h3 class="text-yellow-500 text-2xl font-semibold mb-6 text-center">ATSOGO LOGIN PAGE</h3>
+        <!-- Page title -->
+        <h3 class="text-yellow-500 text-2xl font-semibold mb-6 text-center">RESET YOUR PASSWORD</h3>
 
-        <!-- Login form starts here -->
-        <form action="{{ route('login') }}" method="post">
+        <!-- Password reset form starts here -->
+        <form action="{{ route('password.update') }}" method="post">
             <!-- CSRF token for security (Laravel specific) -->
             @csrf
+
+            <!-- Hidden input for the password reset token -->
+            <input type="hidden" name="token" value="{{ $token }}">
 
             <!-- Email Input Field with Icon -->
             <div class="mb-4">
@@ -35,12 +30,14 @@
                 <div class="relative">
                     <!-- Email input field -->
                     <input
-                        type="text"
+                        type="email"
                         id="email"
                         class="input @error('email') ring-red-500 @enderror shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-400 transition duration-200 ease-in-out"
                         name="email"
-                        value="{{ old('email') }}"
+                        value="{{ old('email', $email ?? '') }}" {{-- Pre-fill email if available --}}
                         placeholder="Enter your email"
+                        required
+                        autocomplete="email"
                     >
                     <!-- Email icon using Font Awesome -->
                     <i class="fas fa-envelope absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
@@ -49,9 +46,9 @@
                 @error('email') <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <!-- Password Input Field with Icon and Show/Hide Toggle -->
-            <div class="mb-6">
-                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+            <!-- New Password Input Field with Icon and Show/Hide Toggle -->
+            <div class="mb-4">
+                <label for="password" class="block text-gray-700 text-sm font-bold mb-2">New Password</label>
                 <!-- Input container for relative positioning of icon and toggle -->
                 <div class="relative">
                     <!-- Password input field -->
@@ -60,50 +57,58 @@
                         id="password"
                         class="input @error('password') ring-red-500 @enderror shadow appearance-none border rounded w-full py-2 pl-10 pr-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-400 transition duration-200 ease-in-out"
                         name="password"
-                        placeholder="Enter your password"
+                        placeholder="Enter new password"
+                        required
+                        autocomplete="new-password"
                     >
                     <!-- Password icon using Font Awesome (left side) -->
                     <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                     <!-- Show/Hide Password Toggle Icon (right side) -->
                     <i class="fas fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" onclick="togglePasswordVisibility('password')"></i>
                 </div>
-                <!-- Error message for password validation -->
+                <!-- Error message for new password validation -->
                 @error('password') <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <!-- Remember me checkbox and Forgot password link -->
-            <div class="remember flex items-center justify-between mb-6">
-                {{-- This inner div uses flex to keep the checkbox and label on the same line --}}
-                <div class="flex items-center">
-                    <input type="checkbox" name="remember" id="remember" class="form-checkbox h-4 w-4 text-yellow-500 rounded focus:ring-yellow-400">
-                    <label for="remember" class="ml-2 text-gray-700 text-sm">Remember me</label>
+            <!-- Confirm New Password Input Field with Icon and Show/Hide Toggle -->
+            <div class="mb-6">
+                <label for="password_confirmation" class="block text-gray-700 text-sm font-bold mb-2">Confirm New Password</label>
+                <!-- Input container for relative positioning of icon and toggle -->
+                <div class="relative">
+                    <!-- Confirm password input field -->
+                    <input
+                        type="password"
+                        id="password_confirmation"
+                        class="input @error('password_confirmation') ring-red-500 @enderror shadow appearance-none border rounded w-full py-2 pl-10 pr-10 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-400 transition duration-200 ease-in-out"
+                        name="password_confirmation"
+                        placeholder="Confirm new password"
+                        required
+                        autocomplete="new-password"
+                    >
+                    <!-- Confirm password icon using Font Awesome (left side) -->
+                    <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <!-- Show/Hide Password Toggle Icon (right side) -->
+                    <i class="fas fa-eye absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer" onclick="togglePasswordVisibility('password_confirmation')"></i>
                 </div>
-                <span class="text-sm">
-                    <a href="#" class="text-yellow-500 hover:text-yellow-600 text-sm font-semibold">Forgot password?</a>
-                </span>
+                <!-- Error message for confirm password validation -->
+                @error('password_confirmation') <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p> @enderror
             </div>
 
-            <!-- Global error message for failed login attempts -->
+            <!-- Global error message for failed password reset attempts -->
             @error('failed')
                 <p class="text-red-500 text-xs italic mb-4">{{ $message }}</p>
             @enderror
 
-            <!-- Login button -->
+            <!-- Reset Password button -->
             <div>
                 <button
                     type="submit"
                     class="w-full bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
                 >
-                    Login
+                    Reset Password
                 </button>
             </div>
         </form>
-
-        {{-- "Don't have an account?" message and Sign up link --}}
-        <div class="mt-6 text-center text-gray-700 text-sm">
-            Don't have an account?
-            <a href="{{ route('register') }}" class="text-yellow-500 hover:text-yellow-600 font-bold">Sign up</a>
-        </div>
     </div>
 
     {{-- JavaScript for password visibility toggle --}}
