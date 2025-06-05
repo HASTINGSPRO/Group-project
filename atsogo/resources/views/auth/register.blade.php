@@ -42,7 +42,7 @@
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Username</label>
                 <div class="relative">
-                    <input type="text" id="name" name="name" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="John Doe">
+                    <input type="text" id="name" name="username" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="John Doe">
                     <i data-lucide="user" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
                 </div>
             </div>
@@ -56,7 +56,7 @@
             <div class="mb-4">
                 <label for="phone" class="block text-sm font-medium text-[var(--text-secondary)] mb-2">Phone Number</label>
                 <div class="relative">
-                    <input type="tel" id="phone" name="phone" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="+1234567890">
+                    <input type="tel" id="phone" name="phone_number" class="w-full pl-10 pr-4 py-2 rounded-lg bg-[var(--bg-tertiary)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200" placeholder="+1234567890">
                     <i data-lucide="phone" class="w-5 h-5 text-[var(--text-secondary)] absolute left-3 top-1/2 transform -translate-y-1/2"></i>
                 </div>
             </div>
@@ -90,7 +90,7 @@
 
         <p class="text-center text-sm text-[var(--text-secondary)] mt-6">
             Already have an account?
-            <a href="atsogo-customer-login.html" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200">Login</a>
+            <a href="atsogo-customer-login.html" class="text-indigo-400 hover:text-indigo-300 transition-colors duration-200">{{ route('login') }}</a>
         </p>
     </div>
 

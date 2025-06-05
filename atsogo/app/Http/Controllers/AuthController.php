@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     
-    public function registerUser(Request $request){
+    public function registerUser(Request $request) {
        $fields = $request->validate([
        'username' =>['required','max:50'], 
        'email' => ['required','max:50' ,'email','unique:users'], 
-       'phone' => ['required','max:12'],
+       'phone_number' => ['required','max:12'],
        'password'=> ['required','min:4', 'confirmed']
         ]); 
        //register the user
