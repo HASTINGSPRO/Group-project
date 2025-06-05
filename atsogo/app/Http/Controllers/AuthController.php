@@ -10,38 +10,31 @@ class AuthController extends Controller
 {
     
     public function registerUser(Request $request) {
+        //validate the request
+        //username, email, phone_number, password
        $fields = $request->validate([
        'username' =>['required','max:50'], 
        'email' => ['required','max:50' ,'email','unique:users'], 
        'phone_number' => ['required','max:12'],
        'password'=> ['required','min:4', 'confirmed']
         ]); 
+
        //register the user
         $user = User::create($fields);
 
-      //login user
+      //login 
         Auth::login($user);
 
        //redirect to home page
-        return redirect()->route('login'); 
+        return redirect()->route('home'); 
+
+      
  }
-
-       //login the user
-    public function login(Request $request){
-       $fields = $request ->validate([
-        'email' =>['required','max:50', 'email'],
-        'password'=> ['required']
-        ]); 
-
-        //attempt to login the user
-        if(Auth::attempt($fields)){
-           //redirect to home page
-           return redirect()->route('home');
-        }
-
-        //login failed
-        return back()->withErrors([
-           'email' => 'Invalid credentials'
+  public function login(){
+           $fields = $request->validate([
+       'email' => ['required','max:50' ,'email','unique:users'], 
+       'password'=> ['required','min:4', 'confirmed']
         ]);
-    }
+        }
+   
 }

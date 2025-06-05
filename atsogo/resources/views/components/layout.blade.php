@@ -8,14 +8,7 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(entrypoints: ['resources/css/app.css','resources/js/app.js'])</head>
 <body>
-     <nav class="bg-amber-500 shadow-lg">
-        <div class="pd-100">
-            <a href="{{ route('home') }}" class="nav-link">Home</a>
-            <a href="{{ route('login') }}" class="nav-link">Login</a>
-            <a href="{{ route('register') }}" class="nav-link">Sign up</a>
-        </div>
-        
-     </nav>
+    
     <main>
         {{ $slot }}
     </main>
