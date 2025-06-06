@@ -7,7 +7,7 @@
     <title>{{env(key: 'APP_NAME')}}</title>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @vite(entrypoints: ['resources/css/app.css','resources/js/app.js'])</head>
-<body>
+<body class="bg-whitesmoke-100">
     
     <main>
         {{ $slot }}

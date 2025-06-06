@@ -3,7 +3,12 @@ use App\Http\Controllers\AuthController;
 
 use Illuminate\Support\Facades\Route;
 
-        Route::view('/', 'welcome')->name('home');
+Route::middleware(['auth'])->group(function () {
+        Route::view('/dashboard', 'customer.dashboard')->name('dashboard');
+});
+
+Route::middleware(['guest'])->group(function () {
+      Route::view('/', 'welcome')->name('home');
 
         Route::view('/register', 'auth.register')->name('register');
 
@@ -12,6 +17,9 @@ use Illuminate\Support\Facades\Route;
         Route::view('/login', 'auth.login')->name('login');
         
         Route::post('/login', [AuthController::class,'loginUser']);
+});
+        
 
-        Route::view('/reset-password', 'auth.reset_password')->name('reset_password');
+        
+
 
