@@ -187,8 +187,8 @@
                 </button>
                 <!-- User Profile (without Logout dropdown) -->
                 <div class="flex items-center space-x-2 cursor-pointer">
-                    <img src="https://placehold.co/40x40/FFD700/FFFFFF?text=JD" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-yellow-500">
-                    <span class="font-semibold hidden sm:block">JD</span>
+                    <img src="https://placehold.co/40x40/FFD700/FFFFFF?text={{ strtoupper(substr(auth()->user()->username, 0, 2)) }}" alt="User Avatar" class="w-10 h-10 rounded-full border-2 border-yellow-500">
+                    <span class="font-semibold hidden sm:block">{{ auth()->user()->username }}</span>
                 </div>
             </div>
         </header>
