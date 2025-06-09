@@ -97,6 +97,10 @@
                     Login
                 </button>
             </div>
+            {{-- session message --}}
+            @if (session('session'))
+                <p>{{ session('success') }}</p>
+            @endif
         </form>
 
         {{-- "Don't have an account?" message and Sign up link --}}

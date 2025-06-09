@@ -46,10 +46,17 @@ class AuthController extends Controller
         }
    
 }
+//logout function
 public function logoutUser(Request $request){
+    //logout user
     Auth::logout();
+    //end the session
     $request -> session() ->invalidate();
+
+    //regenerate CSRF token
     $request -> session()->regenerateToken();
+
+    //redirect to the home page
     return redirect()->route('home')->with('success', 'You are logged out successfully');
 
 }}
