@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('land_plots', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('price', 15, 2);
+            $table->decimal('area_sqm', 8, 2);
+            $table->string('location');
+            $table->enum('status', ['available', 'pending', 'sold'])->default('available');
+            $table->boolean('is_new_listing')->default(true);
             $table->timestamps();
         });
     }
