@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atsogo Land - Admin Dashboard</title>
+    <title>{{env(key: 'APP_NAME')}}</title>
     <!-- Tailwind CSS CDN for quick prototyping. In a real Laravel project, you would compile Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts (Inter) -->

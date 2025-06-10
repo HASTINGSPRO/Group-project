@@ -10,3 +10,4 @@ class land_plots extends Model
     /** @use HasFactory<\Database\Factories\LandPlotsFactory> */
     use HasFactory;
 }
+ 

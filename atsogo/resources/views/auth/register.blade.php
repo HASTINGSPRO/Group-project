@@ -49,7 +49,7 @@
                         id="email"
                         class="input @error('email') ring-red-500 @enderror shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-400 transition duration-200 ease-in-out"
                         name="email"
-                        value="{{ old('email') }}"
+                        value="{{ old('email') }}" 
                         placeholder="Enter your email"
                     >
                     <!-- Email icon using Font Awesome -->

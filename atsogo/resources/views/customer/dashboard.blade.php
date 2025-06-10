@@ -257,7 +257,7 @@
                 </div>
             </div>
         </main>
-    </div>
+    </div> 
 
     <div id="logout-modal" class="modal hidden">
         <div class="modal-content logout-modal-content">
