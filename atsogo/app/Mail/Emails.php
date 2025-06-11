@@ -42,7 +42,11 @@ class Emails extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.email',
+            with: [
+                'name' => 'Ibrahim Cassim',
+                'message' => 'This is a test email from Atsogo Estate Agency.',
+            ]
         );
     }
 
