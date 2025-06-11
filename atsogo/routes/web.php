@@ -8,6 +8,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::post('/logout', [AuthController::class,'logoutUser'])->name('logout');
 
+
 });
 
 Route::middleware(['guest'])->group(function () {
@@ -21,6 +22,8 @@ Route::middleware(['guest'])->group(function () {
         
         Route::post('/login', [AuthController::class,'loginUser']);
 });
+        Route::view('/forgot_password', 'auth.forgot_password')->name('forgot-password');
+
         
 
         

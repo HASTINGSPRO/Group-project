@@ -24,6 +24,7 @@ protected $fillable = [
 ];
 
 protected $casts = [
+        'price' => 'decimal:2',
         'area_sqm' => 'decimal:2',
         'is_new_listing' => 'boolean',
     ];
