@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('plots', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('price', 12, 2);
+            $table->decimal('area_sqm', 10, 2);
+            $table->string('location');
+            $table->enum('status', ['available', 'sold', 'reserved'])->default('available');
+            $table->boolean('is_new_listing')->default(true);
             $table->timestamps();
         });
     }

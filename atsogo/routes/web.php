@@ -6,7 +6,9 @@ use App\Http\Controllers\LandPlotsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
-        Route::view('/dashboard', 'customer.dashboard')->name('dashboard');
+        Route::view('/dashboard', view: 'customer.dashboard')->name('dashboard');
+
+        Route::view('/dashboard', view: 'admin.dashboard')->name('dashboard');
 
         Route::post('/logout', [AuthController::class,'logoutUser'])->name('logout');
 
@@ -25,4 +27,5 @@ Route::middleware(['guest'])->group(function () {
         Route::post('/login', [AuthController::class,'loginUser']);
 });
         
+
 
