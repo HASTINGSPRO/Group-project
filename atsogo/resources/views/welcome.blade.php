@@ -5,9 +5,9 @@
                 background-repeat: no-repeat;
                 height: 100vh; color: white; padding: 20px;">
 
-            <h3 class="title">ATSOGO ESTATE AGENCY</h3>
-                
-        @guest()
+<h3 class="text-center text-3xl font-bold text-gray-800 mt-12 py-4  max-w-lg mx-auto">
+    ATSOGO ESTATE AGENCY
+  </h3>        @guest()
             <div class="flex justify-center items-center h-screen">
                 <div class="bg-white bg-opacity-80 backdrop-blur-lg p-8 rounded-lg shadow-lg max-w-md w-full">
                     <h1 class="text-2xl font-bold mb-6 text-center">Welcome to Atsogo</h1>

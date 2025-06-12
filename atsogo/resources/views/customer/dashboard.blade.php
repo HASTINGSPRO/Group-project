@@ -235,7 +235,7 @@
                     <div class="text-purple-400 text-5xl">
                         <i class="fas fa-dollar-sign"></i>
                     </div>
-                </div>
+                </div> 
             </div>
 
             <div class="bg-white p-6 rounded-xl shadow-lg mb-8">

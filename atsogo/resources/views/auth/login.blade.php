@@ -20,7 +20,7 @@
     </head>
     <!-- Main container for the login form, centered on the page and styled -->
     <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg mt-20">
-        <!-- Login page title -->
+        <!-- Login page title --> 
         <h3 class="text-yellow-500 text-2xl font-semibold mb-6 text-center">ATSOGO LOGIN PAGE</h3>
 
         <!-- Login form starts here -->
