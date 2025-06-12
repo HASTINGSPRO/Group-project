@@ -1,26 +1,20 @@
-<!-- This HTML code defines a login form for the ATSOGO application,
-     incorporating input fields for email and password with integrated icons
-     and a show/hide password toggle. It's styled with Tailwind CSS for
-     responsiveness and aesthetics. -->
-
-<!-- It's assumed that the x-layout component includes the necessary
-     Tailwind CSS setup and the Font Awesome CDN link in its <head> section.
-     If not, add the Font Awesome link manually:
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KwDFWJ8pcyqqQpNPjNpXH7P2jJ/6hOtyWpNKx/bywM+bQUIPTfMfw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
--->
-
 <x-layout>
     <head>
-        <!-- Other head elements like meta tags, title, etc. -->
+        <!-- Tailwind CSS CDN: Essential for styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            /* Optional: Apply Inter font globally for a modern look */
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        </style>
 
         <!-- Font Awesome CSS: Crucial for displaying the icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KwDFWJ8pcyqqQpNPjNpXH7P2jJ/6hOtyWpNKx/bywM+bQUIPTfMfw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <!-- Your other CSS files (e.g., Tailwind CSS) -->
     </head>
     <!-- Main container for the login form, centered on the page and styled -->
     <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg mt-20">
-        <!-- Login page title --> 
+        <!-- Login page title -->
         <h3 class="text-yellow-500 text-2xl font-semibold mb-6 text-center">ATSOGO LOGIN PAGE</h3>
 
         <!-- Login form starts here -->
@@ -85,7 +79,7 @@
 
             <!-- Global error message for failed login attempts -->
             @error('failed')
-                <p class="text-red-500 text-sm  italic mb-4">{{ $message }}</p>
+                <p class="text-red-500 text-sm italic mb-4">{{ $message }}</p>
             @enderror
 
             <!-- Login button -->
@@ -104,7 +98,7 @@
         </form>
 
         {{-- "Don't have an account?" message and Sign up link --}}
-        <div class="mt-6  text-center text-gray-700 text-sm">
+        <div class="mt-6 text-center text-gray-700 text-sm">
             Don't have an account?
             <a href="{{ route('register') }}" class="text-yellow-500 hover:text-yellow-600 font-bold">Sign up</a>
         </div>
@@ -119,7 +113,9 @@
          */
         function togglePasswordVisibility(inputId) {
             const passwordInput = document.getElementById(inputId);
-            const toggleIcon = passwordInput.nextElementSibling; // Assumes the icon is the next sibling
+            // This assumes the icon is the immediately next sibling of the input.
+            // If structure changes, this selector might need adjustment.
+            const toggleIcon = passwordInput.nextElementSibling;
 
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';

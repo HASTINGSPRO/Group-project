@@ -1,11 +1,16 @@
 <x-layout>
     <head>
-        <!-- Other head elements like meta tags, title, etc. -->
+        <!-- Tailwind CSS CDN: Essential for styling -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+            /* Optional: Apply Inter font globally for a modern look */
+            body {
+                font-family: 'Inter', sans-serif;
+            }
+        </style>
 
         <!-- Font Awesome CSS: Crucial for displaying the icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5KwDFWJ8pcyqqQpNPjNpXH7P2jJ/6hOtyWpNKx/bywM+bQUIPTfMfw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <!-- Your other CSS files (e.g., Tailwind CSS) -->
     </head>
     <!-- Main container for the signup form, centered on the page and styled -->
     <div class="max-w-md mx-auto p-8 bg-white shadow-md rounded-lg mt-20">
@@ -49,7 +54,7 @@
                         id="email"
                         class="input @error('email') ring-red-500 @enderror shadow appearance-none border rounded w-full py-2 pl-10 pr-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-yellow-400 transition duration-200 ease-in-out"
                         name="email"
-                        value="{{ old('email') }}" 
+                        value="{{ old('email') }}"
                         placeholder="Enter your email"
                     >
                     <!-- Email icon using Font Awesome -->
@@ -145,7 +150,9 @@
          */
         function togglePasswordVisibility(inputId) {
             const passwordInput = document.getElementById(inputId);
-            const toggleIcon = passwordInput.nextElementSibling; // Assumes the icon is the next sibling
+            // This assumes the icon is the immediately next sibling of the input.
+            // If structure changes, this selector might need adjustment.
+            const toggleIcon = passwordInput.nextElementSibling;
 
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';

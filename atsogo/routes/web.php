@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LandPlotsController;
+//use App\Http\Controllers\PropertyController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +24,5 @@ Route::middleware(['guest'])->group(function () {
         
         Route::post('/login', [AuthController::class,'loginUser']);
 });
-        Route::view('/forgot_password', 'auth.forgot_password')->name('forgot-password');
-
-
+        
 
