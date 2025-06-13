@@ -92,7 +92,7 @@
 
     <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 w-64 bg-white shadow-xl transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out z-50 flex flex-col no-scrollbar overflow-y-auto rounded-r-xl">
         <div class="p-6 flex items-center justify-between lg:justify-start">
-            <h1 class="text-2xl font-bold text-gray-900">Atsogo Land</h1>
+            <h1 class="text-2xl font-bold text-gray-900 inline-block align-middle">Atsogo</h1>
             <button class="lg:hidden text-gray-600 hover:text-gray-900 focus:outline-none" onclick="toggleSidebar()">
                 <i class="fas fa-times text-2xl"></i>
             </button>
@@ -101,7 +101,7 @@
         <nav class="flex-grow p-4">
             <ul>
                 <li class="mb-2">
-                    <a href="#" class="sidebar-item active flex items-center p-3 rounded-lg bg-yellow-500 text-white font-medium hover:bg-yellow-600">
+                    <a href="{{ route('dashboard') }}" class="sidebar-item active flex items-center p-3 rounded-lg bg-yellow-500 text-white font-medium hover:bg-yellow-600">
                         <i class="fas fa-home mr-3 text-lg"></i>
                         My Dashboard
                     </a>

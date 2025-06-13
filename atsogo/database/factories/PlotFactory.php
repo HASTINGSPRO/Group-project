@@ -17,7 +17,13 @@ class PlotFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence(3),
+            'description' => $this->faker->paragraphs(3, true),
+            'price' => $this->faker->numberBetween(10000, 1000000),
+            'area_sqm' => $this->faker->numberBetween(100, 10000),
+            'location' => $this->faker->address,
+            'status' => $this->faker->randomElement(['available', 'sold', 'reserved']),
+            'is_new_listing' => $this->faker->boolean(30),
         ];
     }
 }

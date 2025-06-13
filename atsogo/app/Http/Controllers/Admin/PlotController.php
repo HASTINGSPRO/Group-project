@@ -1,11 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Plot;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StorePlotRequest;
-use App\Http\Requests\UpdatePlotRequest;
 use Illuminate\Http\Request;
 
 class PlotController extends Controller
@@ -13,46 +10,56 @@ class PlotController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-       $query = Plot::where('status', 'available')->latest();
-        
-        if ($request->has('search')) {
-            $query->where(function($q) use ($request) {
-                $q->where('title', 'like', '%'.$request->search.'%')
-                  ->orWhere('description', 'like', '%'.$request->search.'%')
-                  ->orWhere('location', 'like', '%'.$request->search.'%');
-            });
-        }
-
-        if ($request->has('new_listings')) {
-            $query->where('is_new_listing', true);
-        }
-
-        $Plots = $query->paginate(9);
-
-        return view('customer.plots.index', compact('Plots'));
-
+        //
     }
 
-    
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    
+    public function store(Request $request)
+    {
+        //
+    }
+
     /**
      * Display the specified resource.
      */
-    public function show(Plot $plot)
+    public function show(string $id)
     {
-        if ($plot->status !== 'available') {
-                    abort(404);
-                }
-
-                    return view('customer.plots.show', compact('plot'));
-        }
-    
+        //
     }
 
-    
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

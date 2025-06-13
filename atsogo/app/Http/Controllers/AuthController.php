@@ -26,37 +26,41 @@ class AuthController extends Controller
         Auth::login($user);
 
        //redirect to home page
-        return redirect()->route('home'); 
+        return redirect()->route('home')->with('success', 'You have successfully signed up '); 
 
       
  }
   public function loginUser(Request $request){
-       $fields = $request ->validate([
-        'email' =>['required','max:50', 'email'],
-        'password'=> ['required']
-        ]); 
+        $fields = $request ->validate([
+            'email' =>['required','max:50', 'email'],
+            'password'=> ['required']
+            ]); 
 
-        //Try to login
-        if(Auth::attempt($fields, $request ->remember)){
-            return redirect()->intended('/dashboard')->with('success', 'You are logged in successfully');
-        }else{
-            return back()->withErrors([
-                'failed' => 'The credentials do not match with our records'
-            ]);
+            //Try to login
+            if(Auth::attempt($fields, $request ->remember)){
+                return redirect()->intended('/dashboard')->with('success', 'You are logged in successfully');
+            }else{
+                return back()->withErrors([
+                    'failed' => 'The credentials do not match with our records'
+                ]);
+                
         }
    
 }
 //logout function
 public function logoutUser(Request $request){
-    //logout user
-    Auth::logout();
-    //end the session
-    $request -> session() ->invalidate();
+            //logout user
+            Auth::logout();
+            //end the session
+            $request -> session() ->invalidate();
 
-    //regenerate CSRF token
-    $request -> session()->regenerateToken();
+            //regenerate CSRF token
+            $request -> session()->regenerateToken();
 
-    //redirect to the home page
-    return redirect()->route('home')->with('success', 'You are logged out successfully');
+            //redirect to the home page
+            return redirect()->route('home')->with('success', 'You are logged out successfully');
 
-}}
+}
+
+
+}

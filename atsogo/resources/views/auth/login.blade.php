@@ -79,7 +79,9 @@
 
             <!-- Global error message for failed login attempts -->
             @error('failed')
-                <p class="text-red-500 text-sm italic mb-4">{{ $message }}</p>
+                <p class="text-red-500 text-sm italic mb-4" style="color: #ef4444; font-size: 0.875rem; font-style: italic; margin-bottom: 1rem;">
+                    {{ $message }}
+                </p>
             @enderror
 
             <!-- Login button -->
@@ -92,8 +94,10 @@
                 </button>
             </div>
             {{-- session message --}}
-            @if (session('session'))
-                <p>{{ session('success') }}</p>
+            @if (session('success'))
+                <p style="color: green; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 12px; border-radius: 4px; margin-top: 12px; text-align: center;">
+                    {{ session('success') }}
+                </p>
             @endif
         </form>
 
