@@ -50,7 +50,7 @@ class AdminPlotController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Plot $plot)
+    public function show(Plot $Plot)
     {
            return view('admin.plots.show', compact('plot'));
     }
@@ -58,7 +58,7 @@ class AdminPlotController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Plot $plot)
+    public function edit(Plot $Plot)
     {
         return view('admin.plots.edit', compact('plot'));
     }
@@ -66,7 +66,7 @@ class AdminPlotController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePlotRequest $request, Plot $plot)
+    public function update(UpdatePlotRequest $request, Plot $Plot)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -78,7 +78,7 @@ class AdminPlotController extends Controller
             'is_new_listing' => 'boolean',
         ]);
 
-        $plot->update($validated);
+        $Plot->update($validated);
         return redirect()->route('admin.plots.index')
             ->with('success', 'Plot updated successfully.');
 
@@ -87,9 +87,9 @@ class AdminPlotController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Plot $plot)
+    public function destroy(Plot $Plot)
     {
-        $plot->delete();
+        $Plot->delete();
 
         return redirect()->route('admin.plots.index')
             ->with('success', 'Plot deleted successfully.');

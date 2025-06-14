@@ -24,31 +24,31 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($Plots as $plot)
+                        @forelse($Plots as $Plot)
                         <tr>
-                            <td>{{ $plot->title }}</td>
-                            <td>{{ number_format($plot->price, 2) }}</td>
-                            <td>{{ number_format($plot->area_sqm, 2) }}</td>
-                            <td>{{ $plot->location }}</td>
+                            <td>{{ $Plot->title }}</td>
+                            <td>{{ number_format($Plot->price, 2) }}</td>
+                            <td>{{ number_format($Plot->area_sqm, 2) }}</td>
+                            <td>{{ $Plot->location }}</td>
                             <td>
                                 <span class="badge 
-                                    @if($plot->status === 'available') badge-success
-                                    @elseif($plot->status === 'sold') badge-danger
+                                    @if($Plot->status === 'available') badge-success
+                                    @elseif($Plot->status === 'sold') badge-danger
                                     @else badge-warning @endif">
-                                    {{ ucfirst($plot->status) }}
+                                    {{ ucfirst($Plot->status) }}
                                 </span>
                             </td>
                             <td>
-                                @if($plot->is_new_listing)
+                                @if($Plot->is_new_listing)
                                     <span class="badge badge-info">Yes</span>
                                 @else
                                     <span class="badge badge-secondary">No</span>
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('admin.plots.show', $plot) }}" class="btn btn-sm btn-info">View</a>
-                                <a href="{{ route('admin.plots.edit', $plot) }}" class="btn btn-sm btn-primary">Edit</a>
-                                <form action="{{ route('admin.plots.destroy', $plot) }}" method="POST" class="d-inline">
+                                <a href="{{ route('admin.plots.show', $Plot) }}" class="btn btn-sm btn-info">View</a>
+                                <a href="{{ route('admin.plots.edit', $Plot) }}" class="btn btn-sm btn-primary">Edit</a>
+                                <form action="{{ route('admin.plots.destroy', $Plot) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

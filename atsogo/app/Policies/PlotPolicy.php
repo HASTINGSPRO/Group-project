@@ -19,7 +19,7 @@ class PlotPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Plot $plot): bool
+    public function view(User $user, Plot $Plot): bool
     {
         return false;
     }
@@ -35,7 +35,7 @@ class PlotPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Plot $plot): bool
+    public function update(User $user, Plot $Plot): bool
     {
         return false;
     }
@@ -43,7 +43,7 @@ class PlotPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Plot $plot): bool
+    public function delete(User $user, Plot $Plot): bool
     {
         return false;
     }
@@ -51,7 +51,7 @@ class PlotPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Plot $plot): bool
+    public function restore(User $user, Plot $Plot): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class PlotPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Plot $plot): bool
+    public function forceDelete(User $user, Plot $Plot): bool
     {
         return false;
     }

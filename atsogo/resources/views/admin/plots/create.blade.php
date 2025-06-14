@@ -1,7 +1,7 @@
 
 <div class="form-group">
     <label for="title">Title</label>
-    <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $landPlot->title ?? '') }}" required>
+    <input type="text" name="title" id="title" class="form-control @error('title') is-invalid @enderror" value="{{ old('title', $Plot->title ?? '') }}" required>
     @error('title')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror

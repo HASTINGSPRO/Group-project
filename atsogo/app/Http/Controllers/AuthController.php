@@ -58,7 +58,7 @@ public function logoutUser(Request $request){
             $request -> session()->regenerateToken();
 
             //redirect to the home page
-            return redirect()->route('home')->with('success', 'You are logged out successfully');
+            return redirect()->route('login')->with('success', 'You are logged out successfully');
 
 }
 

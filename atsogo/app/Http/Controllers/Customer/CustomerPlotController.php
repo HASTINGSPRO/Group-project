@@ -29,20 +29,20 @@ class CustomerPlotController extends Controller
 
         $Plots = $query->paginate(9);
 
-        return view('customer.plots.index', compact('Plots'));
+        return view('index', compact('Plots'));
 
     }
     /**
      * Display the specified resource.
      */
-    public function show(Plot $plot)
+    public function show(Plot $Plot)
     {
-        if ($plot->status !== 'available') {
+        if ($Plot->status !== 'available') {
             abort(404, 'Land plot not found or not available.');
 ;
                 }
 
-                    return view('customer.plots.show', compact('Plots'));
+                    return view('show', compact('Plots'));
         }
     
     }
