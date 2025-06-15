@@ -15,14 +15,18 @@ class AdminPlotController extends Controller
     public function index()
     {
         $Plots = Plot::latest()->paginate(10);
-        return view('admin.plots.index', compact('Plots'));
+        $activeView = 'admin_plots_index';
+        
+        return view('admin.plots.index', compact('Plots', 'activeView'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-     public function create()
+    public function create()
     {
+        $activeView = 'admin_plots_create';
+        
         return view('admin.plots.create');
     }
 
@@ -31,42 +35,45 @@ class AdminPlotController extends Controller
      */
     public function store(StorePlotRequest $request)
     {
-            $validated = $request->validate([
-                        'title' => 'required|string|max:255',
-                        'description' => 'required|string',
-                        'price' => 'required|numeric|min:0',
-                        'area_sqm' => 'required|numeric|min:0',
-                        'location' => 'required|string|max:255',
-                        'status' => 'required|in:available,sold,reserved',
-                        'is_new_listing' => 'boolean',
-                    ]);
+        $validated = $request->validated([
+             'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'area_sqm' => 'required|numeric|min:0',
+            'location' => 'required|string|max:255',
+            'status' => 'required|in:available,sold,reserved',
+            'is_new_listing' => 'boolean',
+        ]);
+        Plot::create($validated);
 
-                    Plot::create($validated);
-
-                    return redirect()->route('admin.plots.index')
-                        ->with('success', 'Plot created successfully.');
+        return redirect()->route('admin.plots.index')
+            ->with('success', 'Plot created successfully.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Plot $Plot)
+    public function show(Plot $plot)
     {
-           return view('admin.plots.show', compact('plot'));
+        $activeView = 'admin_plots_show';
+        
+        return view('admin.plots.show', compact('plot', 'activeView'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Plot $Plot)
+    public function edit(Plot $plot)
     {
-        return view('admin.plots.edit', compact('plot'));
+        $activeView = 'admin_plots_edit';
+        
+        return view('admin.plots.edit', compact('plot', 'activeView'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePlotRequest $request, Plot $Plot)
+    public function update(UpdatePlotRequest $request, Plot $plot)
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
@@ -78,18 +85,18 @@ class AdminPlotController extends Controller
             'is_new_listing' => 'boolean',
         ]);
 
-        $Plot->update($validated);
+        $plot->update($validated);
+        
         return redirect()->route('admin.plots.index')
             ->with('success', 'Plot updated successfully.');
-
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Plot $Plot)
+    public function destroy(Plot $plot)
     {
-        $Plot->delete();
+        $plot->delete();
 
         return redirect()->route('admin.plots.index')
             ->with('success', 'Plot deleted successfully.');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
@@ -13,10 +14,10 @@ class AuthController extends Controller
         //validate the request
         //username, email, phone_number, password
        $fields = $request->validate([
-       'username' =>['required','max:50'], 
-       'email' => ['required','max:50' ,'email','unique:users'], 
-       'phone_number' => ['required','max:12'],
-       'password'=> ['required','min:4', 'confirmed']
+                'username' =>['required','max:50'], 
+                'email' => ['required','max:50' ,'email','unique:users'], 
+                'phone_number' => ['required','max:12'],
+                'password'=> ['required','min:4', 'confirmed']
         ]); 
 
        //register the user

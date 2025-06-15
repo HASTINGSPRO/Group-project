@@ -28,3 +28,4 @@ class Plot extends Model
         'is_new_listing' => true,
     ];
 }
+

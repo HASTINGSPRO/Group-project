@@ -29,7 +29,7 @@ class CustomerPlotController extends Controller
 
         $Plots = $query->paginate(9);
 
-        return view('index', compact('Plots'));
+        return view('customer.plots.index', compact('Plots'));
 
     }
     /**
@@ -42,7 +42,7 @@ class CustomerPlotController extends Controller
 ;
                 }
 
-                    return view('show', compact('Plots'));
+                    return view('customer.plots.show', compact('Plots'));
         }
     
     }
